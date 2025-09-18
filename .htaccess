@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Handle Angular and Vue.js HTML5 mode
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php/$1 [QSA,L]
+
