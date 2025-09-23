@@ -393,6 +393,93 @@ switch ($path) {
         include APPPATH . 'Views/layouts/main.php';
         break;
         
+    case 'login':
+        // Start session for login
+        session_start();
+        
+        // Handle login GET request
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $title = 'Login - CVI Wirotaman';
+            include APPPATH . 'Views/login/index.php';
+        } else {
+            // Handle login POST request
+            $username = trim($_POST['username'] ?? '');
+            $password = $_POST['password'] ?? '';
+            
+            // Simple demo auth
+            $validUser = getenv('APP_ADMIN_USER') ?: 'admin';
+            $validPass = getenv('APP_ADMIN_PASS') ?: 'admin123';
+            
+            if ($username === $validUser && $password === $validPass) {
+                $_SESSION['isLoggedIn'] = true;
+                $_SESSION['username'] = $username;
+                header('Location: http://localhost:8080/admin');
+                exit;
+            } else {
+                $_SESSION['error'] = 'Login gagal. Periksa kembali kredensial Anda.';
+                header('Location: http://localhost:8080/login');
+                exit;
+            }
+        }
+        break;
+        
+    case 'logout':
+        session_start();
+        session_destroy();
+        header('Location: http://localhost:8080/login');
+        exit;
+        break;
+        
+    case 'admin':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Admin Dashboard - CVI Wirotaman';
+        include APPPATH . 'Views/admin/dashboard.php';
+        break;
+        
+    case 'admin/events':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Events Management - CVI Wirotaman';
+        include APPPATH . 'Views/admin/events/index.php';
+        break;
+        
+    case 'admin/merchandise':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Merchandise Management - CVI Wirotaman';
+        include APPPATH . 'Views/admin/merchandise/index.php';
+        break;
+        
+    case 'admin/campground':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Campground Management - CVI Wirotaman';
+        include APPPATH . 'Views/admin/campground/index.php';
+        break;
+        
+    case 'admin/gallery':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Gallery Management - CVI Wirotaman';
+        include APPPATH . 'Views/admin/gallery/index.php';
+        break;
+        
     default:
         http_response_code(404);
         $title = '404 - Page Not Found';

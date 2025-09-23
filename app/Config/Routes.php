@@ -36,4 +36,10 @@ $routes->group('campground', function($routes) {
 });
 
 
+// Auth & Admin routes
+$routes->get('login', 'Auth::index');
+$routes->post('login', 'Auth::attempt');
+$routes->get('logout', 'Auth::logout');
+
+$routes->get('admin', 'Admin::index');
 
