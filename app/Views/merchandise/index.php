@@ -1,131 +1,236 @@
-<?php
-// Merchandise index page content
-?>
 <!-- Page Header -->
-<section class="hero-section" style="padding: 3rem 0;">
+<section class="hero-section" data-animate="zoom-in">
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Merchandise</h1>
-            <p class="hero-subtitle">Dapatkan merchandise eksklusif dari CVI Wirotaman</p>
+        <div class="hero-content text-center">
+            <!-- Page Icon Above Title -->
+            <div class="mb-3">
+                <i class="fas fa-shopping-bag fa-4x" style="color: var(--accent-green);"></i>
+            </div>
+            
+            <!-- Page Title Below Icon -->
+            <h1 class="hero-title">
+                Merchandise
+            </h1>
+            <p class="hero-subtitle">
+                Dapatkan merchandise eksklusif dari CVI Wirotaman
+            </p>
         </div>
     </div>
 </section>
 
-<!-- Merchandise List -->
-<section class="py-5">
+<!-- Merchandise Content -->
+<section class="py-5" data-animate="fade-up">
     <div class="container">
         <!-- Filter Section -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Cari merchandise..." id="searchInput">
-                    <button class="btn btn-outline-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter Merchandise</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="tumbler">Tumbler</option>
+                                    <option value="kaos">Kaos</option>
+                                    <option value="set">Set</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="priceFilter">
+                                    <option value="">Semua Harga</option>
+                                    <option value="low">< 50k</option>
+                                    <option value="medium">50k - 100k</option>
+                                    <option value="high">> 100k</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary w-100" onclick="filterMerchandise()">
+                                    <i class="fas fa-filter me-2"></i>Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <select class="form-select" id="categoryFilter">
-                    <option value="">Semua Kategori</option>
-                    <option value="Apparel">Apparel</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Equipment">Equipment</option>
-                </select>
             </div>
         </div>
         
-        <div class="row" id="merchandiseGrid">
-            <?php if (!empty($merchandise)): ?>
-                <?php foreach ($merchandise as $item): ?>
-                    <div class="col-lg-3 col-md-6 mb-4 merchandise-item" data-category="<?= esc($item['category']) ?>">
-                        <div class="card">
-                            <div class="position-relative">
-                                <img src="<?= base_url('assets/images/merchandise/' . $item['image']) ?>" 
-                                     class="card-img-top" 
-                                     alt="<?= esc($item['name']) ?>"
-                                     onerror="this.src='<?= base_url('assets/images/placeholder.svg') ?>'">
-                                <?php if ($item['status'] === 'out_of_stock'): ?>
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        <span class="badge bg-danger">Habis</span>
-                                    </div>
-                                <?php endif; ?>
+        <!-- Merchandise Grid -->
+        <div class="row g-4" id="merchandiseGrid">
+            <!-- Product 1 - Tumbler Putih -->
+            <div class="col-lg-4 col-md-6" data-category="tumbler" data-price="low">
+                <div class="card h-100">
+                    <div class="card-body p-0">
+                        <div class="position-relative">
+                            <div class="product-placeholder" style="height: 250px; background: linear-gradient(135deg, var(--light-green), var(--pale-green)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-coffee fa-4x" style="color: var(--accent-green);"></i>
                             </div>
-                            <div class="card-body">
-                                <h5 class="card-title"><?= esc($item['name']) ?></h5>
-                                <p class="card-text"><?= esc(substr($item['description'], 0, 100)) ?>...</p>
-                                
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="price-tag">Rp <?= number_format($item['price'], 0, ',', '.') ?></div>
-                                    <small class="text-muted">
-                                        <i class="fas fa-box me-1"></i>Stok: <?= $item['stock'] ?>
-                                    </small>
-                                </div>
-                                
-                                <div class="d-flex gap-2">
-                                    <a href="<?= base_url('merchandise/detail/' . $item['id']) ?>" class="btn btn-primary flex-fill">Lihat Detail</a>
-                                    <?php if ($item['status'] === 'available' && $item['stock'] > 0): ?>
-                                        <button class="btn btn-outline-primary" onclick="addToCart(<?= $item['id'] ?>)">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
-                                    <?php endif; ?>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-success">Tersedia</span>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="card-title">Tumbler Putih Event Anniversary CVI WIROTAMAN 2nd</h6>
+                            <p class="card-text small text-muted">
+                                Tumbler putih dengan desain eksklusif Anniversary CVI Wirotaman 2nd. 
+                                Bahan stainless steel berkualitas tinggi.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">Rp 45.000</span>
+                                <div>
+                                    <a href="<?= base_url('merchandise/tumbler-putih') ?>" class="btn btn-primary btn-sm">Lihat</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <div class="py-5">
-                        <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
-                        <h4 class="text-muted">Belum Ada Merchandise</h4>
-                        <p class="text-muted">Merchandise akan segera hadir. Pantau terus website kami!</p>
+                </div>
+            </div>
+            
+            <!-- Product 2 - Kaos Event -->
+            <div class="col-lg-4 col-md-6" data-category="kaos" data-price="medium">
+                <div class="card h-100">
+                    <div class="card-body p-0">
+                        <div class="position-relative">
+                            <div class="product-placeholder" style="height: 250px; background: linear-gradient(135deg, var(--pale-green), var(--mint-green)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-tshirt fa-4x" style="color: var(--accent-green);"></i>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-success">Tersedia</span>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="card-title">Kaos Event Anniversary CVI WIROTAMAN 2nd</h6>
+                            <p class="card-text small text-muted">
+                                Kaos dengan desain eksklusif Anniversary CVI Wirotaman 2nd. 
+                                Bahan katun 100% yang nyaman dipakai.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">Rp 100.000</span>
+                                <div>
+                                    <a href="<?= base_url('merchandise/kaos-anniversary') ?>" class="btn btn-primary btn-sm">Lihat</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            <?php endif; ?>
+            </div>
+            
+            <!-- Product 3 - Tumbler Set Vacuum Flask -->
+            <div class="col-lg-4 col-md-6" data-category="set" data-price="medium">
+                <div class="card h-100">
+                    <div class="card-body p-0">
+                        <div class="position-relative">
+                            <div class="product-placeholder" style="height: 250px; background: linear-gradient(135deg, var(--mint-green), var(--light-green)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-gift fa-4x" style="color: var(--accent-green);"></i>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-warning">Terbatas</span>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="card-title">Tumbler Set Vacuum Flask Event Anniversary CVI WIROTAMAN 2nd</h6>
+                            <p class="card-text small text-muted">
+                                Set tumbler vacuum flask dengan desain eksklusif Anniversary CVI Wirotaman 2nd. 
+                                Paket lengkap untuk kebutuhan outdoor.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">Rp 60.000</span>
+                                <div>
+                                    <a href="<?= base_url('merchandise/tumbler-set') ?>" class="btn btn-primary btn-sm">Lihat</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 4 - Tumbler Hitam -->
+            <div class="col-lg-4 col-md-6" data-category="tumbler" data-price="low">
+                <div class="card h-100">
+                    <div class="card-body p-0">
+                        <div class="position-relative">
+                            <div class="product-placeholder" style="height: 250px; background: linear-gradient(135deg, var(--light-green), var(--pale-green)); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-coffee fa-4x" style="color: var(--accent-green);"></i>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-success">Tersedia</span>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="card-title">Tumbler Hitam Event Anniversary CVI WIROTAMAN 2nd</h6>
+                            <p class="card-text small text-muted">
+                                Tumbler hitam dengan desain eksklusif Anniversary CVI Wirotaman 2nd. 
+                                Bahan stainless steel berkualitas tinggi.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">Rp 45.000</span>
+                                <div>
+                                    <a href="<?= base_url('merchandise/tumbler-hitam') ?>" class="btn btn-primary btn-sm">Lihat</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-5">
+            <button class="btn btn-primary btn-lg px-4 py-3" onclick="loadMoreProducts()">
+                <i class="fas fa-plus me-2"></i>Load More Products
+            </button>
         </div>
     </div>
 </section>
-<?php
-// End of merchandise index page
-?>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-4" style="color:#ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.35); font-weight:800;">Ingin Memesan Merchandise?</h2>
+        <p class="lead mb-4" style="color:#f7f7f7; text-shadow: 0 1px 4px rgba(0,0,0,0.35); font-weight:600;">
+            Hubungi kami untuk informasi pemesanan dan pengiriman merchandise CVI Wirotaman.
+        </p>
+        <a href="<?= base_url('contact') ?>" class="btn btn-light btn-lg px-4 py-3">
+            <i class="fas fa-shopping-cart me-2"></i>Pesan Sekarang
+        </a>
+    </div>
+</section>
 
 <script>
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const items = document.querySelectorAll('.merchandise-item');
-        
-        items.forEach(item => {
-            const title = item.querySelector('.card-title').textContent.toLowerCase();
-            const description = item.querySelector('.card-text').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
+function filterMerchandise() {
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const priceFilter = document.getElementById('priceFilter').value;
+    const products = document.querySelectorAll('#merchandiseGrid .col-lg-4');
     
-    // Category filter
-    document.getElementById('categoryFilter').addEventListener('change', function() {
-        const selectedCategory = this.value;
-        const items = document.querySelectorAll('.merchandise-item');
+    products.forEach(product => {
+        const category = product.getAttribute('data-category');
+        const price = product.getAttribute('data-price');
         
-        items.forEach(item => {
-            const category = item.getAttribute('data-category');
-            
-            if (selectedCategory === '' || category === selectedCategory) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
+        let showProduct = true;
+        
+        if (categoryFilter && category !== categoryFilter) {
+            showProduct = false;
+        }
+        
+        if (priceFilter && price !== priceFilter) {
+            showProduct = false;
+        }
+        
+        product.style.display = showProduct ? 'block' : 'none';
     });
+}
+
+function loadMoreProducts() {
+    const loadingBtn = document.querySelector('.btn-lg');
+    const originalText = loadingBtn.innerHTML;
     
-    // Add to cart function
-    function addToCart(itemId) {
-        // This would typically make an AJAX call to add item to cart
-        alert('Fitur keranjang akan segera tersedia!');
-    }
+    loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+    loadingBtn.disabled = true;
+    
+    setTimeout(() => {
+        loadingBtn.innerHTML = originalText;
+        loadingBtn.disabled = false;
+        alert('Semua produk telah ditampilkan!');
+    }, 2000);
+}
 </script>

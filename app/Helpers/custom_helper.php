@@ -6,15 +6,19 @@ if (!function_exists('base_url')) {
      */
     function base_url(string $path = ''): string
     {
-        // Derive base URL from current request to support standalone bootstrap
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        // Get the current protocol
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        
+        // Get the host
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8080';
-        $baseURL = $scheme . '://' . $host . '/';
-
+        
+        // Build base URL
+        $baseURL = $protocol . '://' . $host . '/';
+        
         if ($path === '') {
             return $baseURL;
         }
-
+        
         $path = ltrim($path, '/');
         return $baseURL . $path;
     }
@@ -33,4 +37,27 @@ if (!function_exists('esc')) {
     }
 }
 
-// Do not override PHP built-ins in this simplified runtime
+if (!function_exists('current_url')) {
+    /**
+     * Get current URL
+     */
+    function current_url(): string
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8080';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        
+        return $protocol . '://' . $host . $uri;
+    }
+}
+
+if (!function_exists('site_url')) {
+    /**
+     * Get site URL
+     */
+    function site_url(string $path = ''): string
+    {
+        return base_url($path);
+    }
+}
+?>

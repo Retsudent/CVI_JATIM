@@ -1,141 +1,188 @@
-<?php
-// Campground index page content
-?>
 <!-- Page Header -->
-<section class="hero-section" style="padding: 3rem 0;">
+<section class="hero-section" data-animate="zoom-in">
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Campground</h1>
-            <p class="hero-subtitle">Temukan tempat camping terbaik di wilayah Jawa Timur</p>
+        <div class="hero-content text-center">
+            <!-- Page Icon Above Title -->
+            <div class="mb-3">
+                <i class="fas fa-campground fa-4x" style="color: var(--accent-green);"></i>
+            </div>
+            
+            <!-- Page Title Below Icon -->
+            <h1 class="hero-title">
+                Campground
+            </h1>
+            <p class="hero-subtitle">
+                Temukan tempat camping terbaik di wilayah Jawa Timur
+            </p>
         </div>
     </div>
 </section>
 
-<!-- Campground List -->
-<section class="py-5">
+<!-- Campground Content -->
+<section class="py-5" data-animate="fade-up">
     <div class="container">
         <!-- Filter Section -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Cari campground..." id="searchInput">
-                    <button class="btn btn-outline-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <select class="form-select" id="locationFilter">
-                    <option value="">Semua Lokasi</option>
-                    <option value="Ngawi">Ngawi</option>
-                    <option value="Ponorogo">Ponorogo</option>
-                    <option value="Pacitan">Pacitan</option>
-                    <option value="Madiun">Madiun</option>
-                    <option value="Magetan">Magetan</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="row" id="campgroundGrid">
-            <?php if (!empty($campgrounds)): ?>
-                <?php foreach ($campgrounds as $campground): ?>
-                    <div class="col-lg-4 col-md-6 mb-4 campground-item" data-location="<?= esc($campground['location']) ?>">
-                        <div class="card">
-                            <div class="position-relative">
-                                <img src="<?= base_url('assets/images/campgrounds/' . $campground['image']) ?>" 
-                                     class="card-img-top" 
-                                     alt="<?= esc($campground['name']) ?>"
-                                     onerror="this.src='<?= base_url('assets/images/placeholder.svg') ?>'">
-                                <?php if ($campground['status'] === 'maintenance'): ?>
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        <span class="badge bg-warning">Maintenance</span>
-                                    </div>
-                                <?php endif; ?>
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter Campground</h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <select class="form-select" id="locationFilter">
+                                    <option value="">Semua Lokasi</option>
+                                    <option value="ponorogo">Ponorogo</option>
+                                    <option value="ngawi">Ngawi</option>
+                                    <option value="pacitan">Pacitan</option>
+                                    <option value="madiun">Madiun</option>
+                                    <option value="magetan">Magetan</option>
+                                </select>
                             </div>
-                            <div class="card-body">
-                                <h5 class="card-title"><?= esc($campground['name']) ?></h5>
-                                <p class="card-text"><?= esc(substr($campground['description'], 0, 120)) ?>...</p>
-                                
-                                <div class="campground-info mb-3">
-                                    <p class="text-muted small mb-1">
-                                        <i class="fas fa-map-marker-alt me-1"></i><?= esc($campground['location']) ?>
-                                    </p>
-                                    <p class="text-muted small mb-1">
-                                        <i class="fas fa-tag me-1"></i>Rp <?= number_format($campground['price_per_person'], 0, ',', '.') ?>/orang
-                                    </p>
-                                    <?php if ($campground['facilities']): ?>
-                                        <p class="text-muted small mb-1">
-                                            <i class="fas fa-list me-1"></i><?= esc(substr($campground['facilities'], 0, 50)) ?>...
-                                        </p>
-                                    <?php endif; ?>
-                                </div>
-                                
-                                <div class="d-flex gap-2">
-                                    <a href="<?= base_url('campground/detail/' . $campground['id']) ?>" class="btn btn-primary flex-fill">Lihat Detail</a>
-                                    <?php if ($campground['status'] === 'active'): ?>
-                                        <button class="btn btn-outline-primary" onclick="bookCampground(<?= $campground['id'] ?>)">
-                                            <i class="fas fa-calendar-plus"></i>
-                                        </button>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="priceFilter">
+                                    <option value="">Semua Harga</option>
+                                    <option value="low">< 20k</option>
+                                    <option value="medium">20k - 50k</option>
+                                    <option value="high">> 50k</option>
+                                </select>
+                            </div>
+            <div class="col-md-6">
+                                <button class="btn btn-primary w-100" onclick="filterCampgrounds()">
+                                    <i class="fas fa-filter me-2"></i>Filter
+                    </button>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Campground Grid -->
+        <div class="row g-4" id="campgroundsGrid">
+            <?php if (isset($campgrounds) && !empty($campgrounds)): ?>
+                <?php foreach ($campgrounds as $campground): ?>
+                <div class="col-lg-4 col-md-6" data-location="<?= strtolower(explode(',', $campground['location'])[0]) ?>" data-price="<?= $campground['price_per_person'] < 20000 ? 'low' : ($campground['price_per_person'] < 50000 ? 'medium' : 'high') ?>">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge bg-success">Tersedia</span>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="ms-1">4.5</span>
+                                </div>
+                            </div>
+                            <h5 class="card-title">
+                                <i class="fas fa-campground me-2" style="color: var(--accent-green);"></i>
+                                <?= $campground['name'] ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= substr($campground['description'], 0, 120) ?>...
+                            </p>
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i><?= $campground['location'] ?>
+                                </small>
+                            </div>
+                            <div class="mb-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="border-end">
+                                            <h6 class="text-success">4.5</h6>
+                                            <small class="text-muted">Rating</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border-end">
+                                            <h6 class="text-success">30+</h6>
+                                            <small class="text-muted">Tent</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-success">24/7</h6>
+                                        <small class="text-muted">Security</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">Rp <?= number_format($campground['price_per_person'], 0, ',', '.') ?>/orang</span>
+                                <a href="<?= base_url('campground/detail/' . $campground['id']) ?>" class="btn btn-outline-primary btn-sm">Lihat</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="col-12 text-center">
-                    <div class="py-5">
+                <div class="col-12">
+                    <div class="text-center py-5">
                         <i class="fas fa-campground fa-3x text-muted mb-3"></i>
-                        <h4 class="text-muted">Belum Ada Campground</h4>
-                        <p class="text-muted">Campground akan segera hadir. Pantau terus website kami!</p>
+                        <h4 class="text-muted">Tidak ada campground yang tersedia</h4>
+                        <p class="text-muted">Silakan hubungi admin untuk informasi lebih lanjut.</p>
                     </div>
                 </div>
             <?php endif; ?>
         </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-5">
+            <button class="btn btn-primary btn-lg px-4 py-3" onclick="loadMoreCampgrounds()">
+                <i class="fas fa-plus me-2"></i>Load More Campgrounds
+            </button>
+        </div>
     </div>
 </section>
-<?php
-// End of campground index page
-?>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-4" style="color:#ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.35); font-weight:800;">Butuh Bantuan Memilih Campground?</h2>
+        <p class="lead mb-4" style="color:#f7f7f7; text-shadow: 0 1px 4px rgba(0,0,0,0.35); font-weight:600;">
+            Tim kami siap membantu Anda memilih campground yang sesuai dengan kebutuhan dan budget Anda.
+        </p>
+        <a href="<?= base_url('contact') ?>" class="btn btn-light btn-lg px-4 py-3">
+            <i class="fas fa-envelope me-2"></i>Hubungi Kami
+        </a>
+    </div>
+</section>
 
 <script>
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const items = document.querySelectorAll('.campground-item');
-        
-        items.forEach(item => {
-            const title = item.querySelector('.card-title').textContent.toLowerCase();
-            const description = item.querySelector('.card-text').textContent.toLowerCase();
-            const location = item.querySelector('.campground-info').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || description.includes(searchTerm) || location.includes(searchTerm)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
+function filterCampgrounds() {
+    const locationFilter = document.getElementById('locationFilter').value;
+    const priceFilter = document.getElementById('priceFilter').value;
+    const campgrounds = document.querySelectorAll('#campgroundsGrid .col-lg-4');
     
-    // Location filter
-    document.getElementById('locationFilter').addEventListener('change', function() {
-        const selectedLocation = this.value;
-        const items = document.querySelectorAll('.campground-item');
+    campgrounds.forEach(campground => {
+        const location = campground.getAttribute('data-location');
+        const price = campground.getAttribute('data-price');
         
-        items.forEach(item => {
-            const location = item.getAttribute('data-location');
-            
-            if (selectedLocation === '' || location.includes(selectedLocation)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
+        let showCampground = true;
+        
+        if (locationFilter && location !== locationFilter) {
+            showCampground = false;
+        }
+        
+        if (priceFilter && price !== priceFilter) {
+            showCampground = false;
+        }
+        
+        campground.style.display = showCampground ? 'block' : 'none';
     });
+}
+
+function loadMoreCampgrounds() {
+    const loadingBtn = document.querySelector('.btn-lg');
+    const originalText = loadingBtn.innerHTML;
     
-    // Book campground function
-    function bookCampground(campgroundId) {
-        // This would typically redirect to booking page or open booking modal
-        alert('Fitur booking akan segera tersedia!');
+    loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+    loadingBtn.disabled = true;
+    
+    setTimeout(() => {
+        loadingBtn.innerHTML = originalText;
+        loadingBtn.disabled = false;
+        alert('Semua campground telah ditampilkan!');
+    }, 2000);
     }
 </script>

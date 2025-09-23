@@ -18,7 +18,7 @@ $command = $argv[1] ?? '';
 if ($command === 'serve') {
     $host = 'localhost';
     $port = 8080;
-    
+
     // Check if custom host/port provided
     for ($i = 2; $i < count($argv); $i++) {
         if (strpos($argv[$i], '--host=') === 0) {
@@ -27,15 +27,15 @@ if ($command === 'serve') {
             $port = (int)substr($argv[$i], 7);
         }
     }
-    
+
     echo "Starting CVI Jatim server...\n";
     echo "Server will be available at: http://{$host}:{$port}\n";
     echo "Press Ctrl+C to stop the server\n\n";
-    
+
     // Change to public directory and start server
     chdir(__DIR__ . '/public');
     $cmd = "php -S {$host}:{$port}";
-    
+
     // Execute the command
     passthru($cmd);
 } else {
@@ -44,3 +44,4 @@ if ($command === 'serve') {
     echo "Example: php spark serve\n";
     echo "Example: php spark serve --host=0.0.0.0 --port=3000\n";
 }
+?>
