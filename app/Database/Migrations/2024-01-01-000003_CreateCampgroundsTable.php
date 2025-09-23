@@ -44,8 +44,8 @@ class CreateCampgroundsTable extends Migration
                 'null' => true,
             ],
             'status' => [
-                'type' => 'VARCHAR',
-                'constraint' => 20,
+                'type' => 'ENUM',
+                'constraint' => ['active', 'inactive', 'maintenance'],
                 'default' => 'active',
             ],
             'created_at' => [
