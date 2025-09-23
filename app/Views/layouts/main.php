@@ -40,8 +40,16 @@
             background: linear-gradient(135deg,rgb(240, 248, 255) 0%, #e6ffe6 50%, #f0fff0 100%);
             color: var(--primary-green);
             line-height: 1.6;
-            padding-bottom: 80px; /* Space for bottom nav */
+            padding-top: 80px; /* Space for top navbar on desktop */
+            padding-bottom: 80px; /* Space for bottom nav on mobile */
             min-height: 100vh;
+        }
+        
+        /* Remove top padding on mobile since navbar is at bottom */
+        @media (max-width: 991.98px) {
+            body {
+                padding-top: 0;
+            }
         }
         
         /* Main content spacing */
@@ -51,79 +59,167 @@
         }
         
         
-        /* Top Navigation - Simple */
+        /* Top Navigation - Modern & Simple (Desktop) */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 50%, var(--accent-green) 100%);
-            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
-            border-bottom: 3px solid var(--light-green);
-            padding: 1rem 0;
-            z-index: 1050; /* Ensure navbar stays above other content */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(45, 80, 22, 0.1);
+            border-bottom: 1px solid rgba(107, 142, 35, 0.1);
+            padding: 0.75rem 0;
+            z-index: 1050;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 30px rgba(45, 80, 22, 0.15);
         }
         
         .navbar-brand {
             font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #f5f5dc !important;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: var(--primary-green) !important;
+            text-decoration: none;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .navbar-brand:hover {
-            color: #ffd700 !important;
-            transform: scale(1.05);
+            color: var(--accent-green) !important;
+            transform: translateY(-1px);
+        }
+        
+        .navbar-brand i {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+        }
+        
+        /* Desktop Navigation Menu */
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--secondary-green) !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent-green) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-green), var(--light-green));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link.active {
+            color: var(--accent-green) !important;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
         }
         
         /* Navbar Scroll Progress */
-        .scroll-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.15); }
-        .scroll-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ffd700, #98fb98, #6b8e23); box-shadow: 0 0 8px rgba(255,215,0,0.5); transition: width 0.1s linear; }
+        .scroll-progress-container { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 3px; 
+            background: rgba(107, 142, 35, 0.1); 
+        }
+        .scroll-progress-bar { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent-green), var(--light-green)); 
+            transition: width 0.1s linear; 
+        }
         
-        /* Bottom Navigation */
+        /* Bottom Navigation - Modern & Simple (Mobile) */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
-            box-shadow: 0 -4px 12px rgba(45, 80, 22, 0.3);
-            border-top: 3px solid var(--light-green);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 -2px 20px rgba(45, 80, 22, 0.1);
+            border-top: 1px solid rgba(107, 142, 35, 0.1);
             z-index: 1000;
+            padding: 0.5rem 0;
         }
         
         .bottom-nav .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 1rem 0.5rem;
-            color: #f5f5dc;
+            padding: 0.75rem 0.5rem;
+            color: var(--secondary-green);
             text-decoration: none;
             transition: all 0.3s ease;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 0.25rem;
+            position: relative;
         }
         
         .bottom-nav .nav-item:hover {
-            background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(144, 238, 144, 0.2));
-            color: #ffd700;
+            background: rgba(107, 142, 35, 0.08);
+            color: var(--accent-green);
             transform: translateY(-2px);
         }
         
+        .bottom-nav .nav-item.active {
+            background: rgba(107, 142, 35, 0.12);
+            color: var(--accent-green);
+        }
+        
         .bottom-nav .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0;
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
         }
         
         .bottom-nav .nav-item span {
-            display: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: block;
         }
         
         /* Hero Section */
         .hero-section {
-            padding: 6rem 0 2rem; /* Increased top padding to account for fixed navbar */
+            padding: 2rem 0 2rem; /* Reduced padding since navbar is now simpler */
             background: linear-gradient(135deg, #f0f8ff 0%, #e6ffe6 50%, #f0fff0 100%);
             position: relative;
             overflow: hidden;
             margin-top: 0; /* Ensure no margin conflicts */
+        }
+        
+        /* Desktop hero section needs more top padding */
+        @media (min-width: 992px) {
+            .hero-section {
+                padding: 4rem 0 2rem;
+            }
         }
         
         /* Hero Section with Carousel (Home page only) */
@@ -888,18 +984,14 @@
         
         /* Responsive Design */
         @media (max-width: 576px) {
-            /* Navbar */
-            .navbar { padding: .6rem 0; }
-            .navbar-brand { font-size: 1.1rem; }
-
-            /* Hero Home */
+            /* Mobile Hero Adjustments */
             .hero-carousel-section { min-height: 86vh; }
             .hero-carousel-section .hero-content { padding: 2rem 1.25rem; border-radius: 18px; max-width: 92%; }
             .hero-carousel-section .hero-title { font-size: 1.8rem; }
             .hero-carousel-section .hero-subtitle { font-size: 1rem; }
 
             /* Generic Hero */
-            .hero-section { padding: 4.25rem 0 1.5rem; }
+            .hero-section { padding: 2rem 0 1.5rem; }
             .hero-content { padding: 1.5rem 1.25rem; }
             .hero-title { font-size: 1.6rem; }
             .hero-subtitle { font-size: .95rem; }
@@ -919,6 +1011,19 @@
             /* Highlights */
             .highlights-title { font-size: 1.5rem; }
             .feature-item { padding: .6rem .8rem; }
+            
+            /* Mobile Bottom Nav */
+            .bottom-nav .nav-item {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .bottom-nav .nav-item i {
+                font-size: 1.1rem;
+            }
+            
+            .bottom-nav .nav-item span {
+                font-size: 0.65rem;
+            }
         }
 
         @media (min-width: 577px) and (max-width: 768px) {
@@ -1069,12 +1174,24 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation - Simple Logo Only -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container position-relative">
+    <!-- Top Navigation - Desktop Only -->
+    <nav class="navbar navbar-expand-lg fixed-top d-none d-lg-block">
+        <div class="container position-relative d-flex justify-content-between align-items-center">
             <a class="navbar-brand" href="<?= base_url() ?>">
-                <i class="fas fa-mountain me-2" style="color: var(--accent-green);"></i>CVI WIROTAMAN
+                <i class="fas fa-mountain"></i>
+                CVI WIROTAMAN
             </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="navbar-nav">
+                <a class="nav-link" href="<?= base_url() ?>">Home</a>
+                <a class="nav-link" href="<?= base_url('event') ?>">Events</a>
+                <a class="nav-link" href="<?= base_url('merchandise') ?>">Merchandise</a>
+                <a class="nav-link" href="<?= base_url('campground') ?>">Campground</a>
+                <a class="nav-link" href="<?= base_url('gallery') ?>">Gallery</a>
+                <a class="nav-link" href="<?= base_url('contact') ?>">Contact</a>
+            </div>
+            
             <div class="scroll-progress-container">
                 <div class="scroll-progress-bar" id="scrollProgressBar"></div>
             </div>
@@ -1101,8 +1218,8 @@
         ?>
     </main>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+    <!-- Bottom Navigation - Mobile Only -->
+    <nav class="bottom-nav d-lg-none">
         <div class="container">
             <div class="row g-0">
                 <div class="col-2">
@@ -1114,19 +1231,19 @@
                 <div class="col-2">
                     <a href="<?= base_url('event') ?>" class="nav-item">
                         <i class="fas fa-calendar-alt"></i>
-                        <span>Event</span>
+                        <span>Events</span>
                     </a>
                 </div>
                 <div class="col-2">
                     <a href="<?= base_url('merchandise') ?>" class="nav-item">
                         <i class="fas fa-shopping-bag"></i>
-                        <span>Merchandise</span>
+                        <span>Shop</span>
                     </a>
                 </div>
                 <div class="col-2">
                     <a href="<?= base_url('campground') ?>" class="nav-item">
                         <i class="fas fa-campground"></i>
-                        <span>Campground</span>
+                        <span>Camp</span>
                     </a>
                 </div>
                 <div class="col-2">
@@ -1206,29 +1323,61 @@
             });
         });
         
-        // Active state for bottom navigation
+        // Navbar functionality
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname;
-            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-            
-            navItems.forEach(item => {
-                const href = item.getAttribute('href');
-                if (currentPath === href || (currentPath === '/' && href === '<?= base_url() ?>')) {
-                    item.style.background = 'linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(144, 238, 144, 0.3))';
-                    item.style.color = '#ffd700';
-                }
-            });
-            
-            // Scroll progress bar
+            const navbar = document.querySelector('.navbar');
             const progressBar = document.getElementById('scrollProgressBar');
-            const updateProgress = () => {
-                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-                if (progressBar) progressBar.style.width = scrolled + '%';
-            };
-            updateProgress();
-            window.addEventListener('scroll', updateProgress, { passive: true });
+            
+            // Active state for navigation
+            function setActiveNav() {
+                // Desktop navigation
+                const desktopNavItems = document.querySelectorAll('.navbar .nav-link');
+                desktopNavItems.forEach(item => {
+                    const href = item.getAttribute('href');
+                    if (currentPath === href || (currentPath === '/' && href === '<?= base_url() ?>')) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                // Mobile bottom navigation
+                const mobileNavItems = document.querySelectorAll('.bottom-nav .nav-item');
+                mobileNavItems.forEach(item => {
+                    const href = item.getAttribute('href');
+                    if (currentPath === href || (currentPath === '/' && href === '<?= base_url() ?>')) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Navbar scroll effect
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Scroll progress bar
+                if (progressBar) {
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    progressBar.style.width = scrolled + '%';
+                }
+            }
+            
+            // Initialize
+            setActiveNav();
+            handleScroll();
+            
+            // Event listeners
+            window.addEventListener('scroll', handleScroll, { passive: true });
         });
 
         // Intersection Observer to add 'in-view' class for [data-animate]
