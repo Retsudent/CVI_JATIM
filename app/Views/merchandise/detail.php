@@ -213,8 +213,11 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
                 <div class="card mb-4">
                     <div class="card-body p-0">
                     <div class="position-relative">
-                            <div class="product-placeholder" style="height: 400px; background: linear-gradient(135deg, var(--light-green), var(--pale-green)); display: flex; align-items: center; justify-content: center;">
+                            <div class="product-placeholder" style="height: 400px; background: linear-gradient(135deg, var(--light-green), var(--pale-green)); display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="openImageModal('<?= $product['image'] ?>', '<?= $product['title'] ?>')">
                                 <i class="<?= $product['icon'] ?> fa-5x" style="color: var(--accent-green);"></i>
+                                <div class="position-absolute top-50 start-50 translate-middle">
+                                    <i class="fas fa-search-plus fa-2x text-white" style="opacity: 0.7;"></i>
+                                </div>
                             </div>
                         <div class="position-absolute top-0 end-0 m-3">
                                 <span class="badge bg-success fs-6"><?= ucfirst($product['status']) ?></span>
@@ -226,28 +229,28 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
                 <!-- Thumbnail Images -->
                 <div class="row g-2">
                     <div class="col-3">
-                        <div class="card">
+                        <div class="card" style="cursor: pointer;" onclick="openImageModal('<?= $product['image'] ?>', '<?= $product['title'] ?>')">
                             <div class="card-body p-2 text-center">
                                 <i class="<?= $product['icon'] ?> fa-2x" style="color: var(--accent-green);"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="card">
+                        <div class="card" style="cursor: pointer;" onclick="openImageModal('<?= $product['image'] ?>', '<?= $product['title'] ?>')">
                             <div class="card-body p-2 text-center">
                                 <i class="<?= $product['icon'] ?> fa-2x" style="color: var(--accent-green);"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="card">
+                        <div class="card" style="cursor: pointer;" onclick="openImageModal('<?= $product['image'] ?>', '<?= $product['title'] ?>')">
                             <div class="card-body p-2 text-center">
                                 <i class="<?= $product['icon'] ?> fa-2x" style="color: var(--accent-green);"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-3">
-                        <div class="card">
+                        <div class="card" style="cursor: pointer;" onclick="openImageModal('<?= $product['image'] ?>', '<?= $product['title'] ?>')">
                             <div class="card-body p-2 text-center">
                                 <i class="<?= $product['icon'] ?> fa-2x" style="color: var(--accent-green);"></i>
                             </div>
@@ -278,21 +281,6 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
                             <small class="text-muted">Harga sudah termasuk ongkos kirim</small>
                         </div>
                         
-                        <div class="mb-4">
-                            <h6>Deskripsi Produk</h6>
-                            <p class="card-text">
-                                <?= $product['description'] ?>
-                            </p>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h6>Spesifikasi</h6>
-                            <ul class="list-unstyled">
-                                <?php foreach ($product['specifications'] as $key => $value): ?>
-                                <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent-green);"></i><strong><?= $key ?>:</strong> <?= $value ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
                         
                         <?php if (count($product['sizes']) > 1): ?>
                         <!-- Size Selection -->
@@ -339,12 +327,12 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
                         
                         <!-- Action Buttons -->
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary btn-lg" onclick="addToCart()">
-                                <i class="fas fa-shopping-cart me-2"></i>Tambah ke Keranjang
-                            </button>
-                            <button class="btn btn-outline-primary btn-lg" onclick="buyNow()">
-                                <i class="fas fa-bolt me-2"></i>Beli Sekarang
-                            </button>
+                            <a href="https://wa.me/083134846000?text=Halo, saya tertarik dengan produk <?= urlencode($product['title']) ?> - <?= $product['price'] ?>" 
+                               class="btn btn-success btn-lg" 
+                               target="_blank" 
+                               style="background: linear-gradient(135deg, #25D366, #128C7E); border: none; border-radius: 25px;">
+                                <i class="fab fa-whatsapp me-2"></i>Pesan via WhatsApp
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -360,10 +348,10 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                        <ul class="nav nav-tabs" id="productTabs" role="tablist" style="gap: 16px; white-space: nowrap;">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
-                                    Deskripsi
+                                    Informasi
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -380,10 +368,7 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
                         
                         <div class="tab-content mt-4" id="productTabsContent">
                             <div class="tab-pane fade show active" id="description" role="tabpanel">
-                                <h5>Deskripsi Lengkap</h5>
-                                <p>
-                                    <?= $product['description'] ?>
-                                </p>
+                                <h5>Informasi Produk</h5>
                                 <p>
                                     Produk ini merupakan bagian dari koleksi merchandise eksklusif CVI Wirotaman yang dirancang khusus 
                                     untuk memperingati Anniversary ke-2 komunitas. Setiap item dibuat dengan standar kualitas tinggi 
@@ -515,6 +500,46 @@ $product = $products[$product_id] ?? $products['kaos-anniversary'];
 </section>
 
 <script>
+function openImageModal(imageUrl, title) {
+    // Create modal HTML
+    const modalHtml = `
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">${title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="${imageUrl}" class="img-fluid" alt="${title}" style="max-height: 80vh; border-radius: 8px;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('imageModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+    
+    // Clean up modal when hidden
+    document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
+}
+
 function increaseQuantity() {
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);

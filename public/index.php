@@ -16,6 +16,7 @@ require_once APPPATH . 'Helpers/template_helper.php';
 $request_uri = $_SERVER['REQUEST_URI'] ?? '/';
 $path = parse_url($request_uri, PHP_URL_PATH);
 $path = rtrim($path, '/');
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 // Remove base path if exists
 $base_path = '/';
@@ -446,6 +447,27 @@ switch ($path) {
             header('Location: http://localhost:8080/login');
             exit;
         }
+        if ($method === 'POST') {
+            // Minimal POST handler to create event
+            try {
+                $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+                $stmt = $pdo->prepare('INSERT INTO events (title, description, location, start_date, end_date, image, price, status, created_at, updated_at) VALUES (:title,:description,:location,:start_date,:end_date,:image,:price,:status,NOW(),NOW())');
+                $stmt->execute([
+                    ':title' => $_POST['title'] ?? '',
+                    ':description' => $_POST['description'] ?? '',
+                    ':location' => $_POST['location'] ?? '',
+                    ':start_date' => $_POST['start_date'] ?? null,
+                    ':end_date' => $_POST['end_date'] ?? null,
+                    ':image' => $_POST['image'] ?? null,
+                    ':price' => $_POST['price'] !== '' ? $_POST['price'] : null,
+                    ':status' => $_POST['status'] ?? 'upcoming',
+                ]);
+            } catch (Throwable $e) {
+                // swallow for now
+            }
+            header('Location: http://localhost:8080/admin/events');
+            exit;
+        }
         $title = 'Events Management - CVI Wirotaman';
         include APPPATH . 'Views/admin/events/index.php';
         break;
@@ -454,6 +476,25 @@ switch ($path) {
         session_start();
         if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
             header('Location: http://localhost:8080/login');
+            exit;
+        }
+        if ($method === 'POST') {
+            try {
+                $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+                $stmt = $pdo->prepare('INSERT INTO merchandise (name, description, price, image, category, stock, status, created_at, updated_at) VALUES (:name,:description,:price,:image,:category,:stock,:status,NOW(),NOW())');
+                $stmt->execute([
+                    ':name' => $_POST['name'] ?? '',
+                    ':description' => $_POST['description'] ?? '',
+                    ':price' => $_POST['price'] ?? 0,
+                    ':image' => $_POST['image'] ?? null,
+                    ':category' => $_POST['category'] ?? '',
+                    ':stock' => (int)($_POST['stock'] ?? 0),
+                    ':status' => $_POST['status'] ?? 'available',
+                ]);
+            } catch (Throwable $e) {
+                // swallow for now
+            }
+            header('Location: http://localhost:8080/admin/merchandise');
             exit;
         }
         $title = 'Merchandise Management - CVI Wirotaman';
@@ -466,6 +507,26 @@ switch ($path) {
             header('Location: http://localhost:8080/login');
             exit;
         }
+        if ($method === 'POST') {
+            try {
+                $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+                $stmt = $pdo->prepare('INSERT INTO campgrounds (name, description, location, price_per_person, image, facilities, contact_info, status, created_at, updated_at) VALUES (:name,:description,:location,:price_per_person,:image,:facilities,:contact_info,:status,NOW(),NOW())');
+                $stmt->execute([
+                    ':name' => $_POST['name'] ?? '',
+                    ':description' => $_POST['description'] ?? '',
+                    ':location' => $_POST['location'] ?? '',
+                    ':price_per_person' => $_POST['price_per_person'] ?? 0,
+                    ':image' => $_POST['image'] ?? null,
+                    ':facilities' => $_POST['facilities'] ?? null,
+                    ':contact_info' => $_POST['contact_info'] ?? null,
+                    ':status' => $_POST['status'] ?? 'active',
+                ]);
+            } catch (Throwable $e) {
+                // swallow for now
+            }
+            header('Location: http://localhost:8080/admin/campground');
+            exit;
+        }
         $title = 'Campground Management - CVI Wirotaman';
         include APPPATH . 'Views/admin/campground/index.php';
         break;
@@ -476,8 +537,72 @@ switch ($path) {
             header('Location: http://localhost:8080/login');
             exit;
         }
+        if ($method === 'POST') {
+            // handle photo upload
+            $stored = null;
+            if (!empty($_FILES['image_file']['tmp_name'])) {
+                $ext = pathinfo($_FILES['image_file']['name'] ?? '', PATHINFO_EXTENSION);
+                $name = bin2hex(random_bytes(8)) . ($ext ? ('.' . $ext) : '');
+                $dest = ROOTPATH . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $name;
+                @move_uploaded_file($_FILES['image_file']['tmp_name'], $dest);
+                $stored = $name;
+            }
+            try {
+                $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+                $stmt = $pdo->prepare('INSERT INTO photos (title, caption, image, created_at, updated_at) VALUES (:title,:caption,:image,NOW(),NOW())');
+                $stmt->execute([
+                    ':title' => $_POST['title'] ?? '',
+                    ':caption' => $_POST['caption'] ?? '',
+                    ':image' => $stored,
+                ]);
+            } catch (Throwable $e) {
+                // ignore
+            }
+            header('Location: http://localhost:8080/admin/gallery');
+            exit;
+        }
         $title = 'Gallery Management - CVI Wirotaman';
         include APPPATH . 'Views/admin/gallery/index.php';
+        break;
+
+    case 'admin/gallery/create':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Tambah Foto - CVI Wirotaman';
+        include APPPATH . 'Views/admin/gallery/create.php';
+        break;
+
+    case 'admin/events/create':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Tambah Event - CVI Wirotaman';
+        include APPPATH . 'Views/admin/events/create.php';
+        break;
+
+    case 'admin/merchandise/create':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Tambah Merchandise - CVI Wirotaman';
+        include APPPATH . 'Views/admin/merchandise/create.php';
+        break;
+
+    case 'admin/campground/create':
+        session_start();
+        if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
+            header('Location: http://localhost:8080/login');
+            exit;
+        }
+        $title = 'Tambah Campground - CVI Wirotaman';
+        include APPPATH . 'Views/admin/campground/create.php';
         break;
         
     default:

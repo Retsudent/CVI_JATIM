@@ -40,7 +40,7 @@
 			height: 100%;
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 			background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 25%, #a5d6a7 50%, #81c784 75%, #66bb6a 100%);
-			overflow: hidden;
+			overflow: auto;
 		}
 		
 		.layout {
@@ -660,13 +660,28 @@
 		
 		<!-- Main Content -->
 		<main class="content">
+			<div style="background:#fff3cd;color:#856404;padding:10px 14px;border-radius:8px;border:1px solid #ffeeba;margin-bottom:14px;">
+				<span style="font-weight:700;">Info:</span>
+				count = <?= isset($photos)&&is_array($photos)?count($photos):0 ?>
+				<?php if (!empty($photos)): ?>
+					<?php $__names = array_map(static fn($p)=>$p['image']??'', array_slice($photos,0,3)); ?>
+					<span style="margin-left:10px;">sample = <?= htmlspecialchars(implode(', ', $__names)) ?></span>
+				<?php endif; ?>
+				<?php if (!empty($debug)): ?>
+					<span style="margin-left:10px;">db=<?= htmlspecialchars((string)($debug['dbName'] ?? '')) ?></span>
+					<span style="margin-left:10px;">rawCount=<?= htmlspecialchars((string)($debug['rawCount'] ?? '')) ?></span>
+					<?php if (!empty($debug['dbError'])): ?>
+						<span style="margin-left:10px;color:#b71c1c;">dbError=<?= htmlspecialchars((string)$debug['dbError']) ?></span>
+					<?php endif; ?>
+				<?php endif; ?>
+			</div>
 			<!-- Page Header -->
 			<div class="page-header">
 				<div class="page-title">
 					<div class="page-icon">📸</div>
 					<span>Gallery Management</span>
 				</div>
-				<a href="#" class="add-btn" onclick="openAddModal()">
+				<a href="http://localhost:8080/admin/gallery/create" class="add-btn">
 					<span>➕</span>
 					<span>Upload Foto Baru</span>
 				</a>
@@ -706,12 +721,22 @@
 			
 			<!-- Gallery Container -->
 			<div class="gallery-container">
+				<?php if (!empty($success)): ?>
+					<div style="background:#e8f5e9;color:#1b5e20;padding:10px;border-radius:6px;margin:10px 0;">
+						<?= htmlspecialchars($success) ?>
+					</div>
+				<?php endif; ?>
+				<?php if (!empty($error)): ?>
+					<div style="background:#fdecea;color:#b71c1c;padding:10px;border-radius:6px;margin:10px 0;">
+						<?= htmlspecialchars($error) ?>
+					</div>
+				<?php endif; ?>
 				<div class="container-header">
-					<h3 class="container-title">Daftar Foto</h3>
+					<h3 class="container-title">Daftar Foto <span style="display:inline-block;margin-left:8px;background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;padding:2px 8px;border-radius:999px;font-size:12px;vertical-align:middle;">count: <?= isset($photos)&&is_array($photos)?count($photos):0 ?></span></h3>
 					<div class="gallery-controls">
 						<div class="view-toggle">
-							<button class="view-btn active" onclick="toggleView('grid')">⊞</button>
-							<button class="view-btn" onclick="toggleView('list')">☰</button>
+						<button class="view-btn active" onclick="toggleView('grid', this)">⊞</button>
+						<button class="view-btn" onclick="toggleView('list', this)">☰</button>
 						</div>
 						<div class="search-box">
 							<span>🔍</span>
@@ -720,220 +745,130 @@
 					</div>
 				</div>
 				
+				<?php if (isset($_GET['debug'])): ?>
+					<div style="background:#fff3cd;color:#856404;padding:10px;border-radius:6px;margin:0 0 15px;">
+						Debug: jumlah foto = <?= isset($photos) && is_array($photos) ? count($photos) : 0 ?>
+						<?php if (!empty($debug)): ?>
+							<span style="margin-left:10px;">db=<?= htmlspecialchars((string)($debug['dbName'] ?? '')) ?></span>
+							<span style="margin-left:10px;">rawCount=<?= htmlspecialchars((string)($debug['rawCount'] ?? '')) ?></span>
+							<span style="margin-left:10px;">filesFound=<?= htmlspecialchars((string)($debug['filesFound'] ?? '')) ?></span>
+							<?php if (!empty($debug['dbError'])): ?>
+								<span style="margin-left:10px;color:#b71c1c;">dbError=<?= htmlspecialchars((string)$debug['dbError']) ?></span>
+							<?php endif; ?>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
+
 				<!-- Grid View -->
 				<div class="gallery-grid active" id="gridView">
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>🏕️</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(1)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(1)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(1)">🗑️</button>
+					<?php if (!empty($photos)) : ?>
+						<?php foreach ($photos as $photo): ?>
+							<div class="gallery-item">
+								<div class="gallery-image">
+									<?php if (!empty($photo['image'])): ?>
+								<?php
+									$__imgName = isset($photo['image']) ? basename((string)$photo['image']) : '';
+									$__imgDir = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR;
+									$__imgPath = $__imgDir . $__imgName;
+									$__imgUrl = base_url('assets/images/' . $__imgName);
+									if ($__imgName !== '' && !is_file($__imgPath)) {
+										// If DB value missing extension, try common ones
+										$__base = pathinfo($__imgName, PATHINFO_FILENAME);
+										$__try = ['jpg','jpeg','png','webp'];
+										foreach ($__try as $__ext) {
+											$__candidate = $__base . '.' . $__ext;
+											if (is_file($__imgDir . $__candidate)) { $__imgName = $__candidate; $__imgUrl = base_url('assets/images/' . $__imgName); break; }
+										}
+									}
+									if ($__imgName === '' || !is_file($__imgDir . $__imgName)) {
+										$__imgUrl = base_url('assets/images/placeholder.jpg');
+									}
+								?>
+								<img src="<?= htmlspecialchars($__imgUrl) ?>" alt="<?= htmlspecialchars($photo['title'] ?? '') ?>" style="width:100%;height:100%;object-fit:cover;" />
+									<?php else: ?>
+										<span>📷</span>
+									<?php endif; ?>
+									<div class="gallery-overlay">
+										<div class="overlay-actions">
+											<button class="overlay-btn" onclick="viewPhoto(<?= (int)($photo['id'] ?? 0) ?>)">👁️</button>
+											<button class="overlay-btn" onclick="editPhoto(<?= (int)($photo['id'] ?? 0) ?>)">✏️</button>
+											<button class="overlay-btn" onclick="deletePhoto(<?= (int)($photo['id'] ?? 0) ?>)">🗑️</button>
+										</div>
+									</div>
+								</div>
+								<div class="gallery-info">
+									<h4 class="gallery-title"><?= htmlspecialchars($photo['title'] ?? 'Tanpa Judul') ?></h4>
+									<div class="gallery-meta">
+										<span class="gallery-date"><?= htmlspecialchars(date('d M Y', strtotime($photo['created_at'] ?? date('Y-m-d')))) ?></span>
+										<span class="gallery-size">&nbsp;</span>
+									</div>
+									<div class="gallery-actions">
+										<button class="btn btn-view" onclick="viewPhoto(<?= (int)($photo['id'] ?? 0) ?>)">👁️ Lihat</button>
+										<button class="btn btn-edit" onclick="editPhoto(<?= (int)($photo['id'] ?? 0) ?>)">✏️ Edit</button>
+										<button class="btn btn-delete" onclick="deletePhoto(<?= (int)($photo['id'] ?? 0) ?>)">🗑️ Hapus</button>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Camping di Telaga Ngebel</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">15 Maret 2025</span>
-								<span class="gallery-size">2.4 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(1)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(1)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(1)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>🎉</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(2)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(2)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(2)">🗑️</button>
-								</div>
-							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Anniversary Event</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">22 Maret 2025</span>
-								<span class="gallery-size">1.8 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(2)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(2)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(2)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>⛰️</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(3)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(3)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(3)">🗑️</button>
-								</div>
-							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Pemandangan Gunung</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">5 April 2025</span>
-								<span class="gallery-size">3.2 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(3)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(3)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(3)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>👥</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(4)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(4)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(4)">🗑️</button>
-								</div>
-							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Kopdar CVI</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">12 April 2025</span>
-								<span class="gallery-size">2.1 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(4)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(4)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(4)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>🌅</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(5)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(5)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(5)">🗑️</button>
-								</div>
-							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Sunrise di Campground</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">18 April 2025</span>
-								<span class="gallery-size">4.1 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(5)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(5)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(5)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="gallery-item">
-						<div class="gallery-image">
-							<span>🔥</span>
-							<div class="gallery-overlay">
-								<div class="overlay-actions">
-									<button class="overlay-btn" onclick="viewPhoto(6)">👁️</button>
-									<button class="overlay-btn" onclick="editPhoto(6)">✏️</button>
-									<button class="overlay-btn" onclick="deletePhoto(6)">🗑️</button>
-								</div>
-							</div>
-						</div>
-						<div class="gallery-info">
-							<h4 class="gallery-title">Campfire Night</h4>
-							<div class="gallery-meta">
-								<span class="gallery-date">20 April 2025</span>
-								<span class="gallery-size">1.9 MB</span>
-							</div>
-							<div class="gallery-actions">
-								<button class="btn btn-view" onclick="viewPhoto(6)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editPhoto(6)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deletePhoto(6)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
+						<?php endforeach; ?>
+					<?php else: ?>
+						<p>Tidak ada foto.</p>
+					<?php endif; ?>
 				</div>
 				
 				<!-- List View -->
 				<div class="gallery-list" id="listView">
-					<div class="list-item">
-						<div class="list-image">🏕️</div>
-						<div class="list-info">
-							<h4 class="list-title">Camping di Telaga Ngebel</h4>
-							<div class="list-meta">
-								<span>15 Maret 2025</span>
-								<span>2.4 MB</span>
-								<span>Album: Camping</span>
+					<?php if (!empty($photos)) : ?>
+						<?php foreach ($photos as $photo): ?>
+							<div class="list-item">
+								<div class="list-image">
+									<?php if (!empty($photo['image'])): ?>
+									<?php
+										$__imgName = isset($photo['image']) ? basename((string)$photo['image']) : '';
+										$__imgDir = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR;
+										$__imgPath = $__imgDir . $__imgName;
+										$__imgUrl = base_url('assets/images/' . $__imgName);
+										if ($__imgName !== '' && !is_file($__imgPath)) {
+											$__base = pathinfo($__imgName, PATHINFO_FILENAME);
+											$__try = ['jpg','jpeg','png','webp'];
+											foreach ($__try as $__ext) {
+												$__candidate = $__base . '.' . $__ext;
+												if (is_file($__imgDir . $__candidate)) { $__imgName = $__candidate; $__imgUrl = base_url('assets/images/' . $__imgName); break; }
+											}
+										}
+										if ($__imgName === '' || !is_file($__imgDir . $__imgName)) {
+											$__imgUrl = base_url('assets/images/placeholder.jpg');
+										}
+									?>
+									<img src="<?= htmlspecialchars($__imgUrl) ?>" alt="<?= htmlspecialchars($photo['title'] ?? '') ?>" style="width:80px;height:80px;object-fit:cover;border-radius:10px;" />
+									<?php else: ?>
+										📷
+									<?php endif; ?>
+								</div>
+								<div class="list-info">
+									<h4 class="list-title"><?= htmlspecialchars($photo['title'] ?? 'Tanpa Judul') ?></h4>
+									<div class="list-meta">
+										<span><?= htmlspecialchars(date('d M Y', strtotime($photo['created_at'] ?? date('Y-m-d')))) ?></span>
+										<span><?= htmlspecialchars($photo['caption'] ?? '') ?></span>
+									</div>
+								</div>
+								<div class="list-actions">
+									<button class="btn btn-view" onclick="viewPhoto(<?= (int)($photo['id'] ?? 0) ?>)">👁️</button>
+									<button class="btn btn-edit" onclick="editPhoto(<?= (int)($photo['id'] ?? 0) ?>)">✏️</button>
+									<button class="btn btn-delete" onclick="deletePhoto(<?= (int)($photo['id'] ?? 0) ?>)">🗑️</button>
+								</div>
 							</div>
-						</div>
-						<div class="list-actions">
-							<button class="btn btn-view" onclick="viewPhoto(1)">👁️</button>
-							<button class="btn btn-edit" onclick="editPhoto(1)">✏️</button>
-							<button class="btn btn-delete" onclick="deletePhoto(1)">🗑️</button>
-						</div>
-					</div>
-					
-					<div class="list-item">
-						<div class="list-image">🎉</div>
-						<div class="list-info">
-							<h4 class="list-title">Anniversary Event</h4>
-							<div class="list-meta">
-								<span>22 Maret 2025</span>
-								<span>1.8 MB</span>
-								<span>Album: Events</span>
-							</div>
-						</div>
-						<div class="list-actions">
-							<button class="btn btn-view" onclick="viewPhoto(2)">👁️</button>
-							<button class="btn btn-edit" onclick="editPhoto(2)">✏️</button>
-							<button class="btn btn-delete" onclick="deletePhoto(2)">🗑️</button>
-						</div>
-					</div>
-					
-					<div class="list-item">
-						<div class="list-image">⛰️</div>
-						<div class="list-info">
-							<h4 class="list-title">Pemandangan Gunung</h4>
-							<div class="list-meta">
-								<span>5 April 2025</span>
-								<span>3.2 MB</span>
-								<span>Album: Nature</span>
-							</div>
-						</div>
-						<div class="list-actions">
-							<button class="btn btn-view" onclick="viewPhoto(3)">👁️</button>
-							<button class="btn btn-edit" onclick="editPhoto(3)">✏️</button>
-							<button class="btn btn-delete" onclick="deletePhoto(3)">🗑️</button>
-						</div>
-					</div>
+						<?php endforeach; ?>
+					<?php else: ?>
+						<p>Tidak ada foto.</p>
+					<?php endif; ?>
 				</div>
 			</div>
 		</main>
 	</div>
 	
 	<script>
-		function openAddModal() {
-			alert('Fitur Upload Foto akan segera tersedia!');
-		}
+		// Navigasi ke halaman form tambah foto
+		function openAddModal() { window.location.href = '/admin/gallery/create'; }
 		
 		function viewPhoto(id) {
 			alert('Melihat foto ID: ' + id);
@@ -949,12 +884,12 @@
 			}
 		}
 		
-		function toggleView(view) {
+		function toggleView(view, btn) {
 			// Update active button
 			document.querySelectorAll('.view-btn').forEach(btn => {
 				btn.classList.remove('active');
 			});
-			event.target.classList.add('active');
+			if (btn) { btn.classList.add('active'); }
 			
 			// Toggle views
 			const gridView = document.getElementById('gridView');

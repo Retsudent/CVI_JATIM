@@ -43,3 +43,26 @@ $routes->get('logout', 'Auth::logout');
 
 $routes->get('admin', 'Admin::index');
 
+// Admin CRUD routes
+$routes->group('admin', function($routes) {
+    $routes->get('gallery', 'AdminCrud::indexPhoto');
+    $routes->get('events/create', 'AdminCrud::createEvent');
+    $routes->post('events', 'AdminCrud::storeEvent');
+
+    $routes->get('merchandise/create', 'AdminCrud::createMerch');
+    $routes->post('merchandise', 'AdminCrud::storeMerch');
+
+    $routes->get('campground/create', 'AdminCrud::createCamp');
+    $routes->post('campground', 'AdminCrud::storeCamp');
+
+    $routes->get('gallery/create', 'AdminCrud::createPhoto');
+    $routes->post('gallery', 'AdminCrud::storePhoto');
+    // Fallback direct-view route if controller not matched
+    $routes->get('gallery/create', static function() {
+        return view('admin/gallery/create');
+    });
+});
+
+// Asset proxy for images (works even if webroot not pointing to /public)
+$routes->get('images/(:any)', 'Assets::image/$1');
+

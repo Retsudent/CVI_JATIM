@@ -176,146 +176,123 @@ try {
 <!-- Event Detail Content -->
 <section class="py-5" data-animate="fade-up">
     <div class="container">
-        <div class="row g-4">
-            <!-- Event Info -->
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-4">
-                            <span class="badge <?= $event['badge_class'] ?> fs-6"><?= $event['badge_text'] ?></span>
-                            <small class="text-muted"><?= $event['date'] ?></small>
+        <!-- Event Header -->
+        <div class="card mb-4" style="background: linear-gradient(135deg, #f8fff8 0%, #e6ffe6 100%); border: none;">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge <?= $event['badge_class'] ?> fs-6 px-3 py-2"><?= $event['badge_text'] ?></span>
+                    <small class="text-muted fs-6"><?= $event['date'] ?></small>
                         </div>
                         
-                        <h2 class="card-title mb-3"><?= $event['title'] ?></h2>
-                        <div class="mb-4">
-                            <a href="#" id="openBannerModal" class="d-block">
-                                <img src="<?= $bannerSrc ?>" alt="<?= htmlspecialchars($event['title']) ?>" class="img-fluid rounded-3 shadow" style="width:100%; max-height:420px; object-fit:cover;">
-                            </a>
-                            <small class="text-muted d-block mt-2"><i class="fas fa-image me-1"></i>Banner event — klik gambar untuk memperbesar</small>
+                <h2 class="card-title mb-4" style="color: var(--primary-green);"><?= $event['title'] ?></h2>
+                
+                <div class="mb-4">
+                    <div class="position-relative" style="cursor: pointer;" onclick="openBannerModal()">
+                        <img src="<?= $bannerSrc ?>" alt="<?= htmlspecialchars($event['title']) ?>" class="img-fluid rounded-3 shadow" style="width:100%; max-height:420px; object-fit:cover;">
+                        <div class="position-absolute top-50 start-50 translate-middle">
+                            <i class="fas fa-search-plus fa-3x text-white" style="opacity: 0.7;"></i>
                         </div>
+                    </div>
+                    <small class="text-muted d-block mt-2"><i class="fas fa-image me-1"></i>Banner event - klik gambar untuk memperbesar</small>
+                </div>
                         
-                        <div class="row mb-4 g-3">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas fa-map-marker-alt me-3" style="color: var(--accent-green); font-size: 1.2rem;"></i>
-                                    <div>
-                                        <strong>Lokasi:</strong><br>
-                                        <span class="text-muted"><?= $event['location'] ?></span>
-                                    </div>
-                                </div>
+                <!-- Event Info Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card h-100" style="background: rgba(255,255,255,0.8); border: 1px solid var(--accent-green);">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-map-marker-alt mb-2" style="color: var(--accent-green); font-size: 1.5rem;"></i>
+                                <h6 class="card-title mb-1" style="color: var(--primary-green);">Lokasi</h6>
+                                <small class="text-muted"><?= $event['location'] ?></small>
                             </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas fa-calendar me-3" style="color: var(--accent-green); font-size: 1.2rem;"></i>
-                                    <div>
-                                        <strong>Tanggal:</strong><br>
-                                        <span class="text-muted"><?= $event['date'] ?></span>
                                     </div>
                                 </div>
+                    <div class="col-md-3">
+                        <div class="card h-100" style="background: rgba(255,255,255,0.8); border: 1px solid var(--accent-green);">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-calendar mb-2" style="color: var(--accent-green); font-size: 1.5rem;"></i>
+                                <h6 class="card-title mb-1" style="color: var(--primary-green);">Tanggal</h6>
+                                <small class="text-muted"><?= $event['date'] ?></small>
                             </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas fa-users me-3" style="color: var(--accent-green); font-size: 1.2rem;"></i>
-                                    <div>
-                                        <strong>Kapasitas:</strong><br>
-                                        <span class="text-muted"><?= $event['capacity'] ?></span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas fa-tag me-3" style="color: var(--accent-green); font-size: 1.2rem;"></i>
-                                    <div>
-                                        <strong>Harga:</strong><br>
-                                        <span class="text-success fw-bold fs-5"><?= $event['price'] ?></span>
-                                    </div>
-                                </div>
+                    <div class="col-md-3">
+                        <div class="card h-100" style="background: rgba(255,255,255,0.8); border: 1px solid var(--accent-green);">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-users mb-2" style="color: var(--accent-green); font-size: 1.5rem;"></i>
+                                <h6 class="card-title mb-1" style="color: var(--primary-green);">Kapasitas</h6>
+                                <small class="text-muted"><?= $event['capacity'] ?></small>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100" style="background: rgba(255,255,255,0.8); border: 1px solid var(--accent-green);">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-tag mb-2" style="color: var(--accent-green); font-size: 1.5rem;"></i>
+                                <h6 class="card-title mb-1" style="color: var(--primary-green);">Harga</h6>
+                                <small class="text-success fw-bold"><?= $event['price'] ?></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <h5 class="mb-3">Deskripsi Event</h5>
+                <!-- Description -->
+                <div class="mb-4">
+                    <h5 style="color: var(--primary-green);">Deskripsi Event</h5>
                         <p class="card-text">
                             <?= $event['description'] ?>
                         </p>
+                </div>
+                
+                <!-- WhatsApp Button -->
+                <div class="text-center">
+                    <a href="https://wa.me/083134846000?text=Halo, saya tertarik dengan event <?= urlencode($event['title']) ?>" 
+                       class="btn btn-success btn-lg px-4 py-3" 
+                       target="_blank" 
+                       style="background: linear-gradient(135deg, #25D366, #128C7E); border: none; border-radius: 25px;">
+                        <i class="fab fa-whatsapp me-2"></i>Daftar via WhatsApp
+                    </a>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <h5 class="mb-3">Aktivitas yang Akan Dilakukan</h5>
-                        <div class="row row-cols-1 row-cols-md-2 g-2">
+        <!-- Activities and Facilities -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100" style="background: rgba(255,255,255,0.9); border: 1px solid var(--accent-green);">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3" style="color: var(--primary-green);">
+                            <i class="fas fa-list me-2"></i>Aktivitas yang Akan Dilakukan
+                        </h5>
+                        <ul class="list-unstyled">
                             <?php foreach ($event['activities'] as $activity): ?>
-                            <div class="col">
-                                <div class="d-flex align-items-start">
-                                    <i class="fas fa-check-circle me-2 mt-1" style="color: var(--accent-green);"></i>
-                                    <span><?= $activity ?></span>
-                                </div>
-                            </div>
+                            <li class="mb-2">
+                                <i class="fas fa-check me-2" style="color: var(--accent-green);"></i>
+                                <?= $activity ?>
+                            </li>
                             <?php endforeach; ?>
-                        </div>
-                        
-                        <h5 class="mb-3">Fasilitas yang Disediakan</h5>
-                        <div class="row row-cols-1 row-cols-md-2 g-2">
-                            <?php foreach ($event['facilities'] as $facility): ?>
-                            <div class="col">
-                                <div class="d-flex align-items-start">
-                                    <i class="fas fa-check me-2 mt-1" style="color: var(--accent-green);"></i>
-                                    <span><?= $facility ?></span>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
+                        </ul>
                     </div>
                 </div>
             </div>
-            
-            <!-- Registration Form -->
-            <div class="col-lg-4">
-                <div class="card sticky-top" style="top: 85px;">
+            <div class="col-md-6">
+                <div class="card h-100" style="background: rgba(255,255,255,0.9); border: 1px solid var(--accent-green);">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Daftar Event</h5>
-                        <form id="eventRegistrationForm">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">No. Telepon</label>
-                                <input type="tel" class="form-control" id="phone" name="phone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="participants" class="form-label">Jumlah Peserta</label>
-                                <select class="form-select" id="participants" name="participants" required>
-                                    <option value="">Pilih Jumlah</option>
-                                    <option value="1">1 Orang</option>
-                                    <option value="2">2 Orang</option>
-                                    <option value="3">3 Orang</option>
-                                    <option value="4">4 Orang</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="notes" class="form-label">Catatan Khusus</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg" <?= $event['status'] === 'completed' ? 'disabled' : '' ?>>
-                                    <i class="fas fa-calendar-check me-2"></i><?= $event['status'] === 'completed' ? 'Event Selesai' : 'Daftar Sekarang' ?>
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <hr class="my-4">
-                        
-                        <div class="text-center">
-                            <h6 class="text-success">Total Biaya</h6>
-                            <h4 class="text-success fw-bold"><?= $event['price'] ?></h4>
-                            <small class="text-muted">per orang</small>
-                        </div>
+                        <h5 class="card-title mb-3" style="color: var(--primary-green);">
+                            <i class="fas fa-tent me-2"></i>Fasilitas yang Disediakan
+                        </h5>
+                        <ul class="list-unstyled">
+                            <?php foreach ($event['facilities'] as $facility): ?>
+                            <li class="mb-2">
+                                <i class="fas fa-check me-2" style="color: var(--accent-green);"></i>
+                                <?= $facility ?>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-        
     </div>
 </section>
 
@@ -388,22 +365,53 @@ document.getElementById('eventRegistrationForm').addEventListener('submit', func
     }, 2000);
 });
 
-// Banner modal (preview full image)
-document.addEventListener('DOMContentLoaded', function() {
-    const trigger = document.getElementById('openBannerModal');
-    if (!trigger) return;
+// Banner modal function
+function openBannerModal() {
+    const bannerSrc = '<?= $bannerSrc ?>';
+    const eventTitle = '<?= htmlspecialchars($event['title']) ?>';
+    
+    console.log('Opening banner modal:', { bannerSrc, eventTitle });
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('bannerModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
     const modalHtml = `
     <div class="modal fade" id="bannerModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content bg-dark">
-          <div class="modal-body p-0">
-            <img src="<?= $bannerSrc ?>" alt="<?= htmlspecialchars($event['title']) ?>" class="img-fluid w-100" style="object-fit:contain;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">${eventTitle}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img src="${bannerSrc}" alt="${eventTitle}" class="img-fluid" style="max-height: 80vh; border-radius: 8px;">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
           </div>
         </div>
       </div>
     </div>`;
+    
     document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Check if Bootstrap is available
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap is not loaded');
+        alert('Bootstrap tidak tersedia. Modal tidak dapat dibuka.');
+        return;
+    }
+    
     const modal = new bootstrap.Modal(document.getElementById('bannerModal'));
-    trigger.addEventListener('click', function(e){ e.preventDefault(); modal.show(); });
-});
+    modal.show();
+    
+    // Clean up modal when hidden
+    document.getElementById('bannerModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
+}
+
 </script>

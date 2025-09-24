@@ -518,7 +518,7 @@
 					<div class="page-icon">🎉</div>
 					<span>Events Management</span>
 				</div>
-				<a href="#" class="add-btn" onclick="openAddModal()">
+				<a href="http://localhost:8080/admin/events/create" class="add-btn">
 					<span>➕</span>
 					<span>Tambah Event Baru</span>
 				</a>
@@ -571,94 +571,44 @@
 						<tr>
 							<th>Gambar</th>
 							<th>Event</th>
-							<th>Tanggal</th>
+							<th>Tanggal Mulai</th>
+							<th>Tanggal Selesai</th>
 							<th>Lokasi</th>
 							<th>Status</th>
-							<th>Peserta</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
+<?php
+try {
+    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $rows = $pdo->query('SELECT id, title, description, location, start_date, end_date, image, status FROM events ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) { $rows = []; }
+if (!$rows) {
+    echo '<tr><td colspan="7">Tidak ada data event.</td></tr>';
+}
+foreach ($rows as $r):
+    $img = $r['image'] ? '/assets/images/' . htmlspecialchars($r['image']) : '/assets/images/placeholder.jpg';
+?>
 						<tr>
+							<td><img src="<?= $img ?>" alt="Event" class="event-image"></td>
 							<td>
-								<img src="/assets/images/placeholder.jpg" alt="Event" class="event-image">
+								<div class="event-title"><?= htmlspecialchars($r['title']) ?></div>
+								<div class="event-date"><?= htmlspecialchars($r['description']) ?></div>
 							</td>
-							<td>
-								<div class="event-title">Camping Menyambut Ramadhan</div>
-								<div class="event-date">Event camping keluarga</div>
-							</td>
-							<td>15-17 Maret 2025</td>
-							<td>Telaga Ngebel, Ponorogo</td>
-							<td><span class="status-badge status-active">Aktif</span></td>
-							<td>45</td>
+							<td><?= htmlspecialchars($r['start_date']) ?></td>
+							<td><?= htmlspecialchars($r['end_date']) ?></td>
+							<td><?= htmlspecialchars($r['location']) ?></td>
+							<td><span class="status-badge <?= $r['status']==='active'?'status-active':'status-inactive' ?>"><?= htmlspecialchars($r['status']) ?></span></td>
 							<td>
 								<div class="action-buttons">
-									<button class="btn btn-view" onclick="viewEvent(1)">👁️</button>
-									<button class="btn btn-edit" onclick="editEvent(1)">✏️</button>
-									<button class="btn btn-delete" onclick="deleteEvent(1)">🗑️</button>
+									<button class="btn btn-view">👁️</button>
+									<button class="btn btn-edit">✏️</button>
+									<button class="btn btn-delete">🗑️</button>
 								</div>
 							</td>
 						</tr>
-						<tr>
-							<td>
-								<img src="/assets/images/placeholder.jpg" alt="Event" class="event-image">
-							</td>
-							<td>
-								<div class="event-title">Anniversary CVI Wirotaman 2nd</div>
-								<div class="event-date">Perayaan ulang tahun</div>
-							</td>
-							<td>22 Maret 2025</td>
-							<td>Bumi Perkemahan Karanganyar</td>
-							<td><span class="status-badge status-active">Aktif</span></td>
-							<td>78</td>
-							<td>
-								<div class="action-buttons">
-									<button class="btn btn-view" onclick="viewEvent(2)">👁️</button>
-									<button class="btn btn-edit" onclick="editEvent(2)">✏️</button>
-									<button class="btn btn-delete" onclick="deleteEvent(2)">🗑️</button>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<img src="/assets/images/placeholder.jpg" alt="Event" class="event-image">
-							</td>
-							<td>
-								<div class="event-title">Halal Bi Halal 2025</div>
-								<div class="event-date">Silaturahmi setelah Ramadhan</div>
-							</td>
-							<td>5 April 2025</td>
-							<td>Wonder Park Tawangmangu</td>
-							<td><span class="status-badge status-inactive">Draft</span></td>
-							<td>0</td>
-							<td>
-								<div class="action-buttons">
-									<button class="btn btn-view" onclick="viewEvent(3)">👁️</button>
-									<button class="btn btn-edit" onclick="editEvent(3)">✏️</button>
-									<button class="btn btn-delete" onclick="deleteEvent(3)">🗑️</button>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<img src="/assets/images/placeholder.jpg" alt="Event" class="event-image">
-							</td>
-							<td>
-								<div class="event-title">Happy Camp KOPDAR</div>
-								<div class="event-date">Kopdar dan camping bersama</div>
-							</td>
-							<td>12-14 April 2025</td>
-							<td>Bumi Perkemahan Gembira</td>
-							<td><span class="status-badge status-active">Aktif</span></td>
-							<td>32</td>
-							<td>
-								<div class="action-buttons">
-									<button class="btn btn-view" onclick="viewEvent(4)">👁️</button>
-									<button class="btn btn-edit" onclick="editEvent(4)">✏️</button>
-									<button class="btn btn-delete" onclick="deleteEvent(4)">🗑️</button>
-								</div>
-							</td>
-						</tr>
+<?php endforeach; ?>
 					</tbody>
 				</table>
 			</div>
@@ -666,9 +616,7 @@
 	</div>
 	
 	<script>
-		function openAddModal() {
-			alert('Fitur Tambah Event akan segera tersedia!');
-		}
+		function openAddModal(){ window.location.href='/admin/events/create'; }
 		
 		function viewEvent(id) {
 			alert('Melihat detail event ID: ' + id);

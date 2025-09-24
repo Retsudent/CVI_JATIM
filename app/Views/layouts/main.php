@@ -48,7 +48,10 @@
         /* Remove top padding on mobile since navbar is at bottom */
         @media (max-width: 991.98px) {
             body {
-                padding-top: 0;
+                padding-top: 70px; /* Space for mobile top navbar */
+                overscroll-behavior-y: contain; /* prevent rubber-banding from shifting fixed elems */
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
             }
         }
         
@@ -61,25 +64,25 @@
         
         /* Top Navigation - Modern & Simple (Desktop) */
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
             backdrop-filter: blur(20px);
-            box-shadow: 0 2px 20px rgba(45, 80, 22, 0.1);
-            border-bottom: 1px solid rgba(107, 142, 35, 0.1);
+            box-shadow: 0 2px 20px rgba(26, 61, 10, 0.3);
+            border-bottom: 1px solid rgba(107, 142, 35, 0.2);
             padding: 0.75rem 0;
             z-index: 1050;
             transition: all 0.3s ease;
         }
         
         .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 4px 30px rgba(45, 80, 22, 0.15);
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            box-shadow: 0 4px 30px rgba(26, 61, 10, 0.4);
         }
         
         .navbar-brand {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 1.4rem;
-            color: var(--primary-green) !important;
+            color: #f5f5dc !important;
             text-decoration: none;
             transition: all 0.3s ease;
             display: flex;
@@ -88,12 +91,12 @@
         }
         
         .navbar-brand:hover {
-            color: var(--accent-green) !important;
+            color: #ffffff !important;
             transform: translateY(-1px);
         }
         
         .navbar-brand i {
-            color: var(--accent-green);
+            color: #90ee90;
             font-size: 1.2rem;
         }
         
@@ -105,7 +108,7 @@
         }
         
         .nav-link {
-            color: var(--secondary-green) !important;
+            color: #f5f5dc !important;
             font-weight: 500;
             font-size: 0.95rem;
             text-decoration: none;
@@ -115,7 +118,7 @@
         }
         
         .nav-link:hover {
-            color: var(--accent-green) !important;
+            color: #ffffff !important;
         }
         
         .nav-link::after {
@@ -125,7 +128,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--accent-green), var(--light-green));
+            background: linear-gradient(90deg, #90ee90, #ffffff);
             transition: width 0.3s ease;
         }
         
@@ -134,7 +137,7 @@
         }
         
         .nav-link.active {
-            color: var(--accent-green) !important;
+            color: #ffffff !important;
         }
         
         .nav-link.active::after {
@@ -157,18 +160,129 @@
             transition: width 0.1s linear; 
         }
         
+        /* Mobile Top Navigation */
+        .mobile-top-nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(26, 61, 10, 0.3);
+            border-bottom: 1px solid rgba(107, 142, 35, 0.2);
+            z-index: 1050 !important;
+            padding: 0.75rem 0;
+            height: 70px;
+            transform: none !important;
+            will-change: auto;
+        }
+
+        /* Tabs visibility and colors - simple black text, no transitions */
+        .nav-tabs .nav-link {
+            color: #000000 !important;
+            font-weight: 600;
+            transition: none !important;
+        }
+        .nav-tabs .nav-link:hover { color: #000000 !important; }
+        .nav-tabs .nav-link.active {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+            border-color: #d1e7dd #d1e7dd #ffffff !important; /* bottom blends */
+        }
+        .nav-tabs {
+            --bs-nav-tabs-border-color: #d1e7dd;
+            --bs-nav-tabs-link-hover-border-color: #cfe8cf #cfe8cf #d1e7dd;
+        }
+        
+        .mobile-top-nav .navbar-brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f5f5dc !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .mobile-top-nav .navbar-brand:hover {
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+        
+        .mobile-top-nav .navbar-brand i {
+            color: #90ee90;
+            font-size: 1rem;
+        }
+        
+        /* Mobile Scroll Progress */
+        .mobile-scroll-progress-container { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 3px; 
+            background: rgba(107, 142, 35, 0.2); 
+        }
+        
+        .mobile-scroll-progress-bar { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #90ee90, #ffffff); 
+            transition: width 0.1s linear; 
+        }
+        
+        /* Ensure mobile navbars stay fixed */
+        @media (max-width: 991.98px) {
+            .mobile-top-nav,
+            .bottom-nav {
+                position: fixed !important;
+                transform: none !important;
+                transition: none !important;
+                will-change: auto !important;
+            }
+            
+            .mobile-top-nav {
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            
+            .bottom-nav {
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            
+            /* Disable transforms on layout wrappers that can break fixed positioning in some mobile browsers */
+            html, body, main, header, footer,
+            .hero-section, .page-wrapper, .container,
+            [data-animate] {
+                transform: none !important;
+            }
+
+            /* Prevent any transform or animation on mobile navbars */
+            .mobile-top-nav *,
+            .bottom-nav * {
+                transform: none !important;
+            }
+        }
+        
         /* Bottom Navigation - Modern & Simple (Mobile) */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
             backdrop-filter: blur(20px);
-            box-shadow: 0 -2px 20px rgba(45, 80, 22, 0.1);
-            border-top: 1px solid rgba(107, 142, 35, 0.1);
-            z-index: 1000;
+            box-shadow: 0 -2px 20px rgba(26, 61, 10, 0.3);
+            border-top: 1px solid rgba(107, 142, 35, 0.3);
+            z-index: 1000 !important;
             padding: 0.5rem 0;
+            transform: none !important;
+            will-change: auto;
         }
         
         .bottom-nav .nav-item {
@@ -176,7 +290,7 @@
             flex-direction: column;
             align-items: center;
             padding: 0.75rem 0.5rem;
-            color: var(--secondary-green);
+            color: #f5f5dc;
             text-decoration: none;
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -185,14 +299,14 @@
         }
         
         .bottom-nav .nav-item:hover {
-            background: rgba(107, 142, 35, 0.08);
-            color: var(--accent-green);
+            background: rgba(144, 238, 144, 0.2);
+            color: #ffffff;
             transform: translateY(-2px);
         }
         
         .bottom-nav .nav-item.active {
-            background: rgba(107, 142, 35, 0.12);
-            color: var(--accent-green);
+            background: rgba(144, 238, 144, 0.3);
+            color: #ffffff;
         }
         
         .bottom-nav .nav-item i {
@@ -212,6 +326,7 @@
             background: linear-gradient(135deg, #f0f8ff 0%, #e6ffe6 50%, #f0fff0 100%);
             position: relative;
             overflow: hidden;
+            will-change: auto; /* reduce new stacking context creation */
             margin-top: 0; /* Ensure no margin conflicts */
         }
         
@@ -1198,6 +1313,19 @@
         </div>
     </nav>
 
+    <!-- Mobile Top Navigation -->
+    <nav class="mobile-top-nav d-lg-none">
+        <div class="container d-flex justify-content-center align-items-center h-100">
+            <a class="navbar-brand" href="<?= base_url() ?>">
+                <i class="fas fa-mountain"></i>
+                CVI WIROTAMAN
+            </a>
+        </div>
+        <div class="mobile-scroll-progress-container">
+            <div class="mobile-scroll-progress-bar" id="mobileScrollProgressBar"></div>
+        </div>
+    </nav>
+
     <!-- Main Content -->
     <main>
         <?php
@@ -1328,6 +1456,7 @@
             const currentPath = window.location.pathname;
             const navbar = document.querySelector('.navbar');
             const progressBar = document.getElementById('scrollProgressBar');
+            const mobileProgressBar = document.getElementById('mobileScrollProgressBar');
             
             // Active state for navigation
             function setActiveNav() {
@@ -1364,11 +1493,18 @@
                     navbar.classList.remove('scrolled');
                 }
                 
-                // Scroll progress bar
+                // Desktop scroll progress bar
                 if (progressBar) {
                     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                     const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
                     progressBar.style.width = scrolled + '%';
+                }
+                
+                // Mobile scroll progress bar
+                if (mobileProgressBar) {
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    mobileProgressBar.style.width = scrolled + '%';
                 }
             }
             

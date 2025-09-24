@@ -43,8 +43,8 @@ class CreateEventsTable extends Migration
                 'null' => true,
             ],
             'status' => [
-                'type' => 'ENUM',
-                'constraint' => ['upcoming', 'ongoing', 'completed', 'cancelled'],
+                'type' => 'VARCHAR',
+                'constraint' => 20,
                 'default' => 'upcoming',
             ],
             'created_at' => [

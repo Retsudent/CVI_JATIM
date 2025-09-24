@@ -547,7 +547,7 @@
 					<div class="page-icon">🛍️</div>
 					<span>Merchandise Management</span>
 				</div>
-				<a href="#" class="add-btn" onclick="openAddModal()">
+				<a href="http://localhost:8080/admin/merchandise/create" class="add-btn">
 					<span>➕</span>
 					<span>Tambah Produk Baru</span>
 				</a>
@@ -598,116 +598,42 @@
 				</div>
 				
 				<div class="merchandise-grid">
-					<div class="product-card" data-status="active">
-						<div class="product-image">👕</div>
+<?php
+try {
+    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $rows = $pdo->query('SELECT id, name, description, price, image, category, stock, status FROM merchandise ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) { $rows = []; }
+if (!$rows) {
+    echo '<div>Tidak ada data merchandise.</div>';
+}
+foreach ($rows as $r):
+    $img = $r['image'] ? '/assets/images/' . htmlspecialchars($r['image']) : '/assets/images/placeholder.jpg';
+    $stockClass = ($r['stock'] <= 0 ? 'stock-out' : ($r['stock'] < 10 ? 'stock-low' : 'stock-available'));
+?>
+					<div class="product-card" data-status="<?= htmlspecialchars($r['status']) ?>">
+						<div class="product-image"><img src="<?= $img ?>" alt="" style="max-width:100%; max-height:100%; object-fit:cover;"></div>
 						<div class="product-info">
-							<h4 class="product-title">Kaos Event Anniversary</h4>
-							<p class="product-description">Kaos premium dengan desain eksklusif untuk event anniversary CVI Wirotaman. Bahan katun combed 30s yang nyaman dipakai.</p>
+							<h4 class="product-title"><?= htmlspecialchars($r['name']) ?></h4>
+							<p class="product-description"><?= htmlspecialchars($r['description']) ?></p>
 							<div class="product-meta">
-								<span class="product-price">Rp 85.000</span>
-								<span class="product-stock stock-available">Stok: 45</span>
+								<span class="product-price">Rp <?= number_format((float)$r['price'],0,',','.') ?></span>
+								<span class="product-stock <?= $stockClass ?>">Stok: <?= (int)$r['stock'] ?></span>
 							</div>
 							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(1)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(1)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(1)">🗑️ Hapus</button>
+								<button class="btn btn-view">👁️ Lihat</button>
+								<button class="btn btn-edit">✏️ Edit</button>
+								<button class="btn btn-delete">🗑️ Hapus</button>
 							</div>
 						</div>
 					</div>
-					
-					<div class="product-card" data-status="active">
-						<div class="product-image">🍶</div>
-						<div class="product-info">
-							<h4 class="product-title">Tumbler Putih Event</h4>
-							<p class="product-description">Tumbler stainless steel dengan logo CVI Wirotaman. Kapasitas 500ml, tahan panas dan dingin.</p>
-							<div class="product-meta">
-								<span class="product-price">Rp 125.000</span>
-								<span class="product-stock stock-low">Stok: 8</span>
-							</div>
-							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(2)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(2)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(2)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="product-card" data-status="active">
-						<div class="product-image">🍶</div>
-						<div class="product-info">
-							<h4 class="product-title">Tumbler Hitam Event</h4>
-							<p class="product-description">Tumbler stainless steel hitam dengan logo CVI Wirotaman. Kapasitas 500ml, tahan panas dan dingin.</p>
-							<div class="product-meta">
-								<span class="product-price">Rp 125.000</span>
-								<span class="product-stock stock-available">Stok: 23</span>
-							</div>
-							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(3)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(3)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(3)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="product-card" data-status="active">
-						<div class="product-image">🍶</div>
-						<div class="product-info">
-							<h4 class="product-title">Tumbler Set Vacuum Flask</h4>
-							<p class="product-description">Set tumbler vacuum flask dengan 2 ukuran (350ml & 500ml). Bahan stainless steel premium dengan logo CVI.</p>
-							<div class="product-meta">
-								<span class="product-price">Rp 250.000</span>
-								<span class="product-stock stock-out">Stok: 0</span>
-							</div>
-							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(4)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(4)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(4)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="product-card" data-status="active">
-						<div class="product-image">🎒</div>
-						<div class="product-info">
-							<h4 class="product-title">Tas Ransel CVI</h4>
-							<p class="product-description">Tas ransel dengan desain outdoor yang kuat dan tahan air. Cocok untuk camping dan aktivitas outdoor.</p>
-							<div class="product-meta">
-								<span class="product-price">Rp 180.000</span>
-								<span class="product-stock stock-available">Stok: 12</span>
-							</div>
-							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(5)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(5)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(5)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="product-card" data-status="active">
-						<div class="product-image">🧢</div>
-						<div class="product-info">
-							<h4 class="product-title">Topi Baseball CVI</h4>
-							<p class="product-description">Topi baseball dengan logo bordir CVI Wirotaman. Bahan katun yang nyaman dan tahan lama.</p>
-							<div class="product-meta">
-								<span class="product-price">Rp 65.000</span>
-								<span class="product-stock stock-low">Stok: 5</span>
-							</div>
-							<div class="product-actions">
-								<button class="btn btn-view" onclick="viewProduct(6)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editProduct(6)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteProduct(6)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
+<?php endforeach; ?>
 				</div>
 			</div>
 		</main>
 	</div>
 	
 	<script>
-		function openAddModal() {
-			alert('Fitur Tambah Produk akan segera tersedia!');
-		}
+		function openAddModal(){ window.location.href='/admin/merchandise/create'; }
 		
 		function viewProduct(id) {
 			alert('Melihat detail produk ID: ' + id);
