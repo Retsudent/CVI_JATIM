@@ -41,8 +41,8 @@ class CreateMerchandiseTable extends Migration
                 'default' => 0,
             ],
             'status' => [
-                'type' => 'ENUM',
-                'constraint' => ['available', 'out_of_stock', 'discontinued'],
+                'type' => 'VARCHAR',
+                'constraint' => 20,
                 'default' => 'available',
             ],
             'created_at' => [

@@ -18,12 +18,15 @@ class Auth extends BaseController
 		$username = trim((string) $request->getPost('username'));
 		$password = (string) $request->getPost('password');
 
-		// Simple demo auth: single hardcoded user
-		$validUser = getenv('APP_ADMIN_USER') ?: 'admin';
-		$validPass = getenv('APP_ADMIN_PASS') ?: 'admin123';
+		$users = new \App\Models\UserModel();
+		$user = $users->where('username', $username)->first();
 
-		if ($username === $validUser && $password === $validPass) {
-			$session->set(['isLoggedIn' => true, 'username' => $username]);
+		if ($user && password_verify($password, (string) ($user['password_hash'] ?? ''))) {
+			$session->set([
+				'isLoggedIn' => true,
+				'username' => $user['username'],
+				'role' => $user['role'] ?? 'admin',
+			]);
 			return $this->response->redirect('http://localhost:8080/admin');
 		}
 

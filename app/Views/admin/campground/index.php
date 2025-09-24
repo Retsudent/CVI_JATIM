@@ -572,7 +572,7 @@
 					<div class="page-icon">🏕️</div>
 					<span>Campground Management</span>
 				</div>
-				<a href="#" class="add-btn" onclick="openAddModal()">
+				<a href="http://localhost:8080/admin/campground/create" class="add-btn">
 					<span>➕</span>
 					<span>Tambah Campground Baru</span>
 				</a>
@@ -621,158 +621,43 @@
 				</div>
 				
 				<div class="campground-grid">
+<?php
+try {
+    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $rows = $pdo->query('SELECT id, name, description, location, price_per_person, image, facilities, contact_info, status FROM campgrounds ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) { $rows = []; }
+if (!$rows) { echo '<div>Tidak ada data campground.</div>'; }
+foreach ($rows as $r):
+    $img = $r['image'] ? '/assets/images/' . htmlspecialchars($r['image']) : '/assets/images/placeholder.jpg';
+?>
 					<div class="campground-card">
 						<div class="campground-image">
-							<span>🏞️</span>
-							<div class="campground-badge">Aktif</div>
+							<img src="<?= $img ?>" alt="" style="width:100%;height:100%;object-fit:cover;">
+							<div class="campground-badge"><?= htmlspecialchars($r['status']) ?></div>
 						</div>
 						<div class="campground-info">
-							<h4 class="campground-title">Telaga Ngebel</h4>
-							<div class="campground-location">
-								<span>📍</span>
-								<span>Ngebel, Ponorogo, Jawa Timur</span>
-							</div>
-							<p class="campground-description">
-								Campground dengan pemandangan danau yang menakjubkan. Lokasi ini sangat cocok untuk camping keluarga dengan suasana yang tenang dan udara yang sejuk.
-							</p>
-							<div class="campground-features">
-								<div class="features-title">Fasilitas:</div>
-								<div class="features-list">
-									<span class="feature-tag">Toilet & MCK</span>
-									<span class="feature-tag">Parkir</span>
-									<span class="feature-tag">Warung</span>
-									<span class="feature-tag">Security</span>
-									<span class="feature-tag">WiFi</span>
-								</div>
-							</div>
+							<h4 class="campground-title"><?= htmlspecialchars($r['name']) ?></h4>
+							<div class="campground-location"><span>📍</span><span><?= htmlspecialchars($r['location']) ?></span></div>
+							<p class="campground-description"><?= htmlspecialchars($r['description']) ?></p>
 							<div class="campground-meta">
-								<span class="campground-price">Rp 15.000</span>
-								<span class="campground-capacity">👥 30+ spot</span>
+								<span class="campground-price">Rp <?= number_format((float)$r['price_per_person'],0,',','.') ?></span>
+								<span class="campground-capacity">👥 spot</span>
 							</div>
 							<div class="campground-actions">
-								<button class="btn btn-view" onclick="viewCampground(1)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editCampground(1)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteCampground(1)">🗑️ Hapus</button>
+								<button class="btn btn-view">👁️ Lihat</button>
+								<button class="btn btn-edit">✏️ Edit</button>
+								<button class="btn btn-delete">🗑️ Hapus</button>
 							</div>
 						</div>
 					</div>
-					
-					<div class="campground-card">
-						<div class="campground-image">
-							<span>🏕️</span>
-							<div class="campground-badge">Aktif</div>
-						</div>
-						<div class="campground-info">
-							<h4 class="campground-title">Bumi Perkemahan Karanganyar</h4>
-							<div class="campground-location">
-								<span>📍</span>
-								<span>Karanganyar, Ngawi, Jawa Timur</span>
-							</div>
-							<p class="campground-description">
-								Area camping yang luas dengan fasilitas lengkap. Lokasi strategis dengan akses mudah dan fasilitas modern. Cocok untuk acara besar dan camping kelompok.
-							</p>
-							<div class="campground-features">
-								<div class="features-title">Fasilitas:</div>
-								<div class="features-list">
-									<span class="feature-tag">Hall Indoor</span>
-									<span class="feature-tag">Sound System</span>
-									<span class="feature-tag">Kantin</span>
-									<span class="feature-tag">Rental</span>
-									<span class="feature-tag">WiFi</span>
-								</div>
-							</div>
-							<div class="campground-meta">
-								<span class="campground-price">Rp 25.000</span>
-								<span class="campground-capacity">👥 50+ spot</span>
-							</div>
-							<div class="campground-actions">
-								<button class="btn btn-view" onclick="viewCampground(2)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editCampground(2)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteCampground(2)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="campground-card">
-						<div class="campground-image">
-							<span>⛰️</span>
-							<div class="campground-badge">Premium</div>
-						</div>
-						<div class="campground-info">
-							<h4 class="campground-title">Wonder Park Tawangmangu</h4>
-							<div class="campground-location">
-								<span>📍</span>
-								<span>Tawangmangu, Magetan, Jawa Timur</span>
-							</div>
-							<p class="campground-description">
-								Campground premium dengan pemandangan gunung dan udara sejuk. Lokasi eksklusif dengan fasilitas terbaik dan pemandangan yang menakjubkan.
-							</p>
-							<div class="campground-features">
-								<div class="features-title">Fasilitas:</div>
-								<div class="features-list">
-									<span class="feature-tag">Restaurant</span>
-									<span class="feature-tag">Meeting Room</span>
-									<span class="feature-tag">Fotografer</span>
-									<span class="feature-tag">Air Panas</span>
-									<span class="feature-tag">WiFi High Speed</span>
-								</div>
-							</div>
-							<div class="campground-meta">
-								<span class="campground-price">Rp 50.000</span>
-								<span class="campground-capacity">👥 20+ spot</span>
-							</div>
-							<div class="campground-actions">
-								<button class="btn btn-view" onclick="viewCampground(3)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editCampground(3)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteCampground(3)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
-					
-					<div class="campground-card">
-						<div class="campground-image">
-							<span>🎪</span>
-							<div class="campground-badge">Aktif</div>
-						</div>
-						<div class="campground-info">
-							<h4 class="campground-title">Bumi Perkemahan Gembira</h4>
-							<div class="campground-location">
-								<span>📍</span>
-								<span>Madiun, Jawa Timur</span>
-							</div>
-							<p class="campground-description">
-								Campground dengan suasana yang menyenangkan. Lokasi yang mudah dijangkau dengan fasilitas lengkap dan harga terjangkau. Cocok untuk keluarga dan kelompok kecil.
-							</p>
-							<div class="campground-features">
-								<div class="features-title">Fasilitas:</div>
-								<div class="features-list">
-									<span class="feature-tag">Playground</span>
-									<span class="feature-tag">Gazebo</span>
-									<span class="feature-tag">Warung</span>
-									<span class="feature-tag">Rental</span>
-									<span class="feature-tag">WiFi</span>
-								</div>
-							</div>
-							<div class="campground-meta">
-								<span class="campground-price">Rp 30.000</span>
-								<span class="campground-capacity">👥 25+ spot</span>
-							</div>
-							<div class="campground-actions">
-								<button class="btn btn-view" onclick="viewCampground(4)">👁️ Lihat</button>
-								<button class="btn btn-edit" onclick="editCampground(4)">✏️ Edit</button>
-								<button class="btn btn-delete" onclick="deleteCampground(4)">🗑️ Hapus</button>
-							</div>
-						</div>
-					</div>
+<?php endforeach; ?>
 				</div>
 			</div>
 		</main>
 	</div>
 	
 	<script>
-		function openAddModal() {
-			alert('Fitur Tambah Campground akan segera tersedia!');
-		}
+		function openAddModal(){ window.location.href='/admin/campground/create'; }
 		
 		function viewCampground(id) {
 			alert('Melihat detail campground ID: ' + id);
