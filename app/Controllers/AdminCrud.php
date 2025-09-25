@@ -86,6 +86,21 @@ class AdminCrud extends BaseController
             return $this->response->redirect('http://localhost:8080/login');
         }
 
+        // Handle image upload or URL
+        $imagePath = (string) ($this->request->getPost('image') ?: '');
+        try {
+            $file = $this->request->getFile('image_file');
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $targetDir = ROOTPATH . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images';
+                if (!is_dir($targetDir)) { @mkdir($targetDir, 0775, true); }
+                $randomName = $file->getRandomName();
+                $file->move($targetDir, $randomName);
+                $imagePath = 'assets/images/' . $randomName;
+            }
+        } catch (\Throwable $e) {
+            // keep fallback
+        }
+
         $data = [
             'title'       => (string) $this->request->getPost('title'),
             'description' => (string) $this->request->getPost('description'),
@@ -94,7 +109,7 @@ class AdminCrud extends BaseController
             'end_date'    => (string) $this->request->getPost('end_date'),
             'price'       => $this->request->getPost('price') !== null ? (string) $this->request->getPost('price') : null,
             'status'      => (string) ($this->request->getPost('status') ?: 'upcoming'),
-            'image'       => (string) ($this->request->getPost('image') ?: ''),
+            'image'       => $imagePath,
         ];
 
         $events = new \App\Models\EventModel();
@@ -115,6 +130,21 @@ class AdminCrud extends BaseController
             return $this->response->redirect('http://localhost:8080/login');
         }
 
+        // Handle image upload or URL
+        $imagePath = (string) ($this->request->getPost('image') ?: '');
+        try {
+            $file = $this->request->getFile('image_file');
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $targetDir = ROOTPATH . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images';
+                if (!is_dir($targetDir)) { @mkdir($targetDir, 0775, true); }
+                $randomName = $file->getRandomName();
+                $file->move($targetDir, $randomName);
+                $imagePath = 'assets/images/' . $randomName;
+            }
+        } catch (\Throwable $e) {
+            // keep fallback
+        }
+
         $data = [
             'name'        => (string) $this->request->getPost('name'),
             'description' => (string) $this->request->getPost('description'),
@@ -122,7 +152,7 @@ class AdminCrud extends BaseController
             'category'    => (string) $this->request->getPost('category'),
             'stock'       => (int) ($this->request->getPost('stock') ?: 0),
             'status'      => (string) ($this->request->getPost('status') ?: 'available'),
-            'image'       => (string) ($this->request->getPost('image') ?: ''),
+            'image'       => $imagePath,
         ];
 
         $merch = new \App\Models\MerchandiseModel();
@@ -143,6 +173,21 @@ class AdminCrud extends BaseController
             return $this->response->redirect('http://localhost:8080/login');
         }
 
+        // Image handling: prefer uploaded file, fallback to URL/text field
+        $imagePath = (string) ($this->request->getPost('image') ?: '');
+        try {
+            $file = $this->request->getFile('image_file');
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $targetDir = ROOTPATH . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'images';
+                if (!is_dir($targetDir)) { @mkdir($targetDir, 0775, true); }
+                $randomName = $file->getRandomName();
+                $file->move($targetDir, $randomName);
+                $imagePath = 'assets/images/' . $randomName;
+            }
+        } catch (\Throwable $e) {
+            // keep fallback imagePath
+        }
+
         $data = [
             'name'             => (string) $this->request->getPost('name'),
             'description'      => (string) $this->request->getPost('description'),
@@ -151,7 +196,7 @@ class AdminCrud extends BaseController
             'facilities'       => (string) ($this->request->getPost('facilities') ?: ''),
             'contact_info'     => (string) ($this->request->getPost('contact_info') ?: ''),
             'status'           => (string) ($this->request->getPost('status') ?: 'active'),
-            'image'            => (string) ($this->request->getPost('image') ?: ''),
+            'image'            => $imagePath,
         ];
 
         $camp = new \App\Models\CampgroundModel();

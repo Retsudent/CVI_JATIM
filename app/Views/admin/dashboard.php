@@ -40,14 +40,14 @@
 			height: 100%;
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 			background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 25%, #a5d6a7 50%, #81c784 75%, #66bb6a 100%);
-			overflow: hidden;
+			overflow: auto;
 		}
 		
 		.layout {
 			display: grid;
 			grid-template-columns: 280px 1fr;
-			grid-template-rows: 70px 1fr;
-			height: 100vh;
+			grid-template-rows: minmax(56px, 64px) 1fr;
+			min-height: 100vh;
 		}
 		
 		/* Topbar */
@@ -58,29 +58,44 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 0 30px;
+			padding: 0 20px;
 			box-shadow: var(--shadow-lg);
 			position: relative;
 			z-index: 100;
+		}
+
+		/* Mobile menu button */
+		.menu-toggle {
+			display: none;
+			width: 40px;
+			height: 40px;
+			border-radius: 10px;
+			background: rgba(255, 255, 255, 0.12);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			color: #fff;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
 		}
 		
 		.brand {
 			display: flex;
 			align-items: center;
-			gap: 15px;
+			gap: 12px;
 			font-weight: 800;
-			font-size: 20px;
+			font-size: clamp(16px, 2.5vw, 20px);
 		}
 		
 		.logo-icon {
-			width: 40px;
-			height: 40px;
+			width: clamp(28px, 4.5vw, 40px);
+			height: clamp(28px, 4.5vw, 40px);
 			background: linear-gradient(45deg, var(--gold), var(--amber));
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-size: 20px;
+			font-size: clamp(14px, 2vw, 20px);
 			box-shadow: var(--shadow-md);
 		}
 		
@@ -91,14 +106,14 @@
 		}
 		
 		.user-avatar {
-			width: 35px;
-			height: 35px;
+			width: clamp(28px, 4vw, 35px);
+			height: clamp(28px, 4vw, 35px);
 			background: rgba(255, 255, 255, 0.2);
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-size: 16px;
+			font-size: clamp(12px, 1.8vw, 16px);
 		}
 		
 		.logout-btn {
@@ -184,7 +199,7 @@
 		
 		/* Main Content */
 		.content {
-			padding: 30px;
+			padding: clamp(16px, 2.5vw, 30px);
 			overflow-y: auto;
 			background: rgba(255, 255, 255, 0.1);
 		}
@@ -221,7 +236,7 @@
 		}
 		
 		.welcome-title {
-			font-size: 28px;
+			font-size: clamp(20px, 3.2vw, 28px);
 			font-weight: 700;
 			color: var(--dark-green);
 			margin-bottom: 10px;
@@ -230,7 +245,7 @@
 		}
 		
 		.welcome-subtitle {
-			font-size: 16px;
+			font-size: clamp(13px, 2.2vw, 16px);
 			color: var(--gray-600);
 			margin-bottom: 20px;
 			position: relative;
@@ -254,7 +269,7 @@
 		/* Stats Grid */
 		.stats-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 			gap: 20px;
 			margin-bottom: 30px;
 		}
@@ -343,7 +358,7 @@
 		
 		.actions-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 			gap: 15px;
 		}
 		
@@ -351,7 +366,7 @@
 			display: flex;
 			align-items: center;
 			gap: 12px;
-			padding: 15px 20px;
+			padding: clamp(12px, 2vw, 15px) clamp(14px, 3vw, 20px);
 			background: var(--gray-50);
 			border: 2px solid var(--gray-200);
 			border-radius: 12px;
@@ -379,23 +394,39 @@
 		}
 		
 		/* Responsive */
-		@media (max-width: 768px) {
+		@media (max-width: 1200px) {
+			.stats-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+		}
+
+		@media (max-width: 992px) {
 			.layout {
 				grid-template-columns: 1fr;
-				grid-template-rows: 70px 1fr;
+				grid-template-rows: 60px 1fr;
 			}
-			
+			.menu-toggle { display: inline-flex; }
 			.sidebar {
-				display: none;
+				position: fixed;
+				top: 60px;
+				bottom: 0;
+				left: 0;
+				width: 260px;
+				background: rgba(255, 255, 255, 0.98);
+				transform: translateX(-100%);
+				transition: transform 0.25s ease;
+				z-index: 200;
 			}
-			
-			.content {
-				padding: 20px;
-			}
-			
-			.stats-grid {
-				grid-template-columns: 1fr;
-			}
+			.sidebar.open { transform: translateX(0); }
+			.content { padding: 20px; }
+			.stats-grid { grid-template-columns: 1fr; }
+		}
+
+		@media (max-width: 576px) {
+			.topbar { padding: 0 12px; }
+			.brand { gap: 8px; }
+			.user-info span { display: none; }
+			.logout-btn { display: none; }
+			.sidebar { width: 220px; top: 56px; }
+			.actions-grid { grid-template-columns: 1fr; }
 		}
 	</style>
 </head>
@@ -404,6 +435,7 @@
 		<!-- Topbar -->
 		<div class="topbar">
 			<div class="brand">
+				<button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
 				<div class="logo-icon">🌿</div>
 				<span>Admin CVI Jatim</span>
 			</div>
@@ -512,27 +544,27 @@
 					<span>Quick Actions</span>
 				</h2>
 				<div class="actions-grid">
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin/events/create') ?>" class="action-btn">
 						<div class="action-icon">➕</div>
 						<span>Tambah Event Baru</span>
 					</a>
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin/merchandise') ?>" class="action-btn">
 						<div class="action-icon">📦</div>
 						<span>Kelola Merchandise</span>
 					</a>
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin/campground') ?>" class="action-btn">
 						<div class="action-icon">🏕️</div>
 						<span>Update Campground</span>
 					</a>
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin/gallery/create') ?>" class="action-btn">
 						<div class="action-icon">📷</div>
 						<span>Upload Gallery</span>
 					</a>
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin') ?>" class="action-btn">
 						<div class="action-icon">📊</div>
 						<span>Lihat Analytics</span>
 					</a>
-					<a href="#" class="action-btn">
+					<a href="<?= base_url('admin') ?>" class="action-btn">
 						<div class="action-icon">⚙️</div>
 						<span>Pengaturan</span>
 					</a>
@@ -540,6 +572,24 @@
 			</div>
 		</main>
 	</div>
+<script>
+(function(){
+	var toggle = document.getElementById('menuToggle');
+	var sidebar = document.querySelector('.sidebar');
+	if (toggle && sidebar) {
+		toggle.addEventListener('click', function(){
+			sidebar.classList.toggle('open');
+		});
+	}
+	// Close when clicking outside
+	document.addEventListener('click', function(e){
+		if (window.innerWidth <= 992 && sidebar && sidebar.classList.contains('open')) {
+			var within = sidebar.contains(e.target) || (toggle && toggle.contains(e.target));
+			if (!within) { sidebar.classList.remove('open'); }
+		}
+	});
+})();
+</script>
 </body>
 </html>
 
