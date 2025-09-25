@@ -1,3 +1,39 @@
+<style>
+	:root{--accent-green:#2e7d32;--accent-light:#66bb6a;--text-dark:#1b4332}
+	.hero-section{position:relative;min-height:72vh;color:#fff;display:flex;align-items:center}
+	.hero-carousel{position:absolute;inset:0;overflow:hidden}
+	.carousel-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .8s ease}
+	.carousel-slide.active{opacity:1}
+	.carousel-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.25))}
+	.floating-particles{position:absolute;inset:0;pointer-events:none}
+	.floating-particles .particle{position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);animation:float 8s infinite ease-in-out}
+	.floating-particles .particle:nth-child(1){top:20%;left:10%;animation-delay:0s}
+	.floating-particles .particle:nth-child(2){top:60%;left:70%;animation-delay:1.2s}
+	.floating-particles .particle:nth-child(3){top:40%;left:30%;animation-delay:.6s}
+	.floating-particles .particle:nth-child(4){top:75%;left:15%;animation-delay:1.8s}
+	.floating-particles .particle:nth-child(5){top:30%;left:85%;animation-delay:.3s}
+	@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+	.carousel-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2}
+	.carousel-dots .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:all .2s}
+	.carousel-dots .dot.active,.carousel-dots .dot:hover{background:#fff;transform:scale(1.1)}
+	.hero-title{font-weight:800;letter-spacing:.05em;text-shadow:0 6px 20px rgba(0,0,0,.35)}
+	.hero-subtitle{opacity:.95}
+	.stat-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s}
+	.stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.12)}
+	.badge-circle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent-green),var(--accent-light));color:#fff}
+	.feature-item{display:flex;align-items:center;gap:10px;background:#f7fff7;border:1px solid #e0f2e9;padding:10px 12px;border-radius:12px}
+	.card-frame{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px}
+	.parallax-lite{object-fit:cover;transform:scale(1.02);transition:transform .8s ease}
+	.card-frame:hover .parallax-lite{transform:scale(1.06)}
+	.testimonial-card{background:#fff;border-radius:16px;box-shadow:0 8px 22px rgba(0,0,0,.08);padding:22px;height:100%}
+	.cta-section{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
+	.cta-title{font-weight:800;color:var(--text-dark)}
+
+	/* Responsive Typography */
+	@media (max-width: 992px){.hero-section{min-height:64vh}.hero-title{font-size:40px}}
+	@media (max-width: 768px){.hero-title{font-size:32px}.hero-subtitle{font-size:16px}.stat-card{padding:16px}}
+	@media (max-width: 576px){.hero-section{min-height:58vh}.hero-title{font-size:28px}.btn{width:100%}}
+</style>
 <!-- Hero Section with Background Carousel -->
 <section class="hero-section hero-carousel-section">
            <!-- Background Image Carousel -->
