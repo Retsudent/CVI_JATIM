@@ -77,6 +77,11 @@
 		.filter-buttons {
 			display: flex;
 			gap: 8px;
+			/* allow horizontal scrolling on small screens */
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			padding-bottom: 6px;
+			flex-wrap: nowrap;
 		}
 		
 		.filter-btn {
@@ -87,12 +92,24 @@
 			font-size: 14px;
 			cursor: pointer;
 			transition: all 0.2s ease;
+			min-width: 72px;
+			flex: 0 0 auto;
 		}
 		
 		.filter-btn.active {
 			background: #111827;
 			color: white;
 			border-color: #111827;
+		}
+		
+		/* Responsive adjustments for filter buttons */
+		@media (max-width: 768px) {
+			.filter-btn {
+				padding: 6px 10px;
+				font-size: 13px;
+				min-width: 64px;
+			}
+			.table-header { flex-wrap: wrap; gap: 8px; align-items: center; }
 		}
 		
 		.products-grid {
@@ -225,31 +242,6 @@
 					</div>
 					<div class="stat-value">6</div>
 					<div class="stat-label">Active Products</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-header">
-						<div class="stat-icon">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<circle cx="12" cy="12" r="10"></circle>
-								<polyline points="12,6 12,12 16,14"></polyline>
-							</svg>
-						</div>
-					</div>
-					<div class="stat-value">Rp 2.4M</div>
-					<div class="stat-label">Total Sales</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-header">
-						<div class="stat-icon">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M18 20V10"></path>
-								<path d="M12 20V4"></path>
-								<path d="M6 20v-6"></path>
-							</svg>
-						</div>
-					</div>
-					<div class="stat-value">156</div>
-					<div class="stat-label">Sold This Month</div>
 				</div>
 			</div>
 			

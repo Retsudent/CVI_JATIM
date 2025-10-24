@@ -786,6 +786,7 @@ class AdminCrud extends BaseController
 
         return $this->response->setBody(view('admin/gallery/index', [
             'photos' => $photoRows,
+            'totalPhotos' => is_array($photoRows) ? count($photoRows) : 0,
             'success' => $this->session->getFlashdata('success'),
             'error' => $this->session->getFlashdata('error')
         ]));

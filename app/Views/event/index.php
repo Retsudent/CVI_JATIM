@@ -28,24 +28,16 @@
                     <div class="card-body">
                         <h5 class="card-title mb-3">Filter Events</h5>
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <select class="form-select" id="categoryFilter">
-                                    <option value="">Semua Kategori</option>
-                                    <option value="camping">Camping</option>
-                                    <option value="anniversary">Anniversary</option>
-                                    <option value="halal">Halal Bi Halal</option>
-                                    <option value="ramadhan">Ramadhan</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <select class="form-select" id="statusFilter">
                                     <option value="">Semua Status</option>
                                     <option value="upcoming">Upcoming</option>
                                     <option value="ongoing">Ongoing</option>
                                     <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <button class="btn btn-primary w-100" onclick="filterEvents()">
                                     <i class="fas fa-filter me-2"></i>Filter
                                 </button>
@@ -153,25 +145,16 @@
 
 <script>
 function filterEvents() {
-    const categoryFilter = document.getElementById('categoryFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
     const events = document.querySelectorAll('#eventsGrid .col-lg-4');
-    
+
     events.forEach(event => {
-        const category = event.getAttribute('data-category');
-        const status = event.getAttribute('data-status');
-        
-        let showEvent = true;
-        
-        if (categoryFilter && category !== categoryFilter) {
-            showEvent = false;
-        }
-        
-        if (statusFilter && status !== statusFilter) {
-            showEvent = false;
-        }
-        
-        event.style.display = showEvent ? 'block' : 'none';
+        const status = (event.getAttribute('data-status') || '').toString();
+
+        // If statusFilter is empty, show all. Otherwise only show matching status.
+        const showEvent = !statusFilter || status === statusFilter;
+
+        event.style.display = showEvent ? '' : 'none';
     });
 }
 

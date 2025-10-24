@@ -2,23 +2,23 @@
 <section class="hero-section hero-carousel-section">
            <!-- Background Image Carousel -->
            <div class="hero-carousel">
-               <div class="carousel-slide active" style="background-image: url('<?= base_url('assets/images/35b7b2774f1949a4.jpg') ?>');">
-                   <div class="carousel-overlay"></div>
-               </div>
-               <div class="carousel-slide" style="background-image: url('<?= base_url('assets/images/62c14f4ffdafc5cb.jpg') ?>');">
-                   <div class="carousel-overlay"></div>
-               </div>
-               <div class="carousel-slide" style="background-image: url('<?= base_url('assets/images/718ebf5741219657.jpg') ?>');">
-                   <div class="carousel-overlay"></div>
-               </div>
-               <div class="carousel-slide" style="background-image: url('<?= base_url('assets/images/7f8b83cb1c2beead.jpg') ?>');">
-                   <div class="carousel-overlay"></div>
-               </div>
-               <div class="carousel-slide" style="background-image: url('<?= base_url('assets/images/ac906cf890b300ac.jpg') ?>');">
-                   <div class="carousel-overlay"></div>
-               </div>
-           </div>
-           
+                <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+                    <div class="carousel-overlay"></div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');">
+                    <div class="carousel-overlay"></div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');">
+                    <div class="carousel-overlay"></div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1526483360412-f4dbaf036963');">
+                    <div class="carousel-overlay"></div>
+                </div>
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1529070538774-1843cb3265df');">
+                    <div class="carousel-overlay"></div>
+                </div>
+            </div>
+
            <!-- Floating Particles -->
            <div class="floating-particles">
                <div class="particle"></div>
@@ -163,9 +163,11 @@
                 <div class="col-lg-6 order-1 order-lg-2">
                     <div class="highlights-image card-frame mx-auto">
                         <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
-                            <img src="<?= base_url('assets/images/bd5bc8b1c82729fa.jpg') ?>" 
-                                 alt="Mountain Adventure" class="w-100 h-100 object-cover parallax-lite">
-                        </div>
+                        <img 
+                            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" 
+                            alt="Camping di alam terbuka dengan pegunungan" 
+                            class="w-100 h-100 object-cover parallax-lite">
+                    </div>
                     </div>
                 </div>
             </div>

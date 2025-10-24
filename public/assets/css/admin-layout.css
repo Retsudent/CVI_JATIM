@@ -453,6 +453,46 @@ html, body {
 	.content {
 		padding: 20px;
 	}
+
+	/* Make topbar compact on small screens */
+	.topbar {
+		padding: 0 12px;
+		height: 64px;
+	}
+
+	.topbar .brand {
+		gap: 8px;
+	}
+
+	/* Hide the full brand text to save horizontal space, show only logo */
+	.topbar .brand span {
+		display: none;
+	}
+
+	.logo-icon {
+		width: 32px;
+		height: 32px;
+		font-size: 14px;
+	}
+
+	.user-info {
+		gap: 8px;
+	}
+
+	.user-avatar {
+		width: 28px;
+		height: 28px;
+		font-size: 14px;
+	}
+
+	.logout-btn {
+		padding: 6px 10px;
+		font-size: 13px;
+	}
+
+	/* Make sure the page title and cards compress on smaller screens */
+	.page-title { font-size: 18px; }
+	.card { padding: 16px; }
 	
 	.page-header {
 		flex-direction: column;
