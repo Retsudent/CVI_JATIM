@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><?= $title ?? 'CVI Wirotaman' ?> - Komunitas Pecinta Alam Jawa Timur</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Natural Camping Theme */
+        :root {
+            --primary-green: #2d5016;
+            --secondary-green: #4a7c59;
+            --accent-green: #6b8e23;
+            --light-green: #8fbc8f;
+            --pale-green: #90ee90;
+            --mint-green: #98fb98;
+            --natural-brown: #8b4513;
+            --earth-tone: #a0522d;
+            --forest-green: #228b22;
+            --sage-green: #9caf88;
+            --olive-green: #808000;
+            --dark-green: #1a3d0a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Prevent horizontal scrolling */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg,rgb(240, 248, 255) 0%, #e6ffe6 50%, #f0fff0 100%);
+            color: var(--primary-green);
+            line-height: 1.6;
+            padding-top: 100px; /* Space for top navbar on desktop */
+            padding-bottom: 80px; /* Space for bottom nav on mobile */
+            min-height: 100vh;
+        }
+        
+        /* Remove top padding on mobile since navbar is at bottom */
+        @media (max-width: 991.98px) {
+            body {
+                padding-top: 70px; /* Space for mobile top navbar */
+                overscroll-behavior-y: contain; /* prevent rubber-banding from shifting fixed elems */
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Main content spacing */
+        main {
+            position: relative;
+            z-index: 1;
+        }
+        
+        
+        /* Top Navigation - Modern & Simple (Desktop) */
+        .navbar {
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(26, 61, 10, 0.3);
+            border-bottom: 1px solid rgba(107, 142, 35, 0.2);
+            padding: 1.75rem 0;
+            z-index: 1050;
+            transition: all 0.3s ease;
+            height: 120px;
+        }
+        
+        .navbar.scrolled {
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            box-shadow: 0 4px 30px rgba(26, 61, 10, 0.4);
+        }
+        
+        .navbar-brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #f5f5dc !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand:hover {
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+        
+        .navbar-brand i {
+            color: #90ee90;
+            font-size: 1.2rem;
+        }
+        
+        /* Desktop Navigation Menu */
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: #f5f5dc !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #90ee90, #ffffff);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        .nav-link.active {
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            width: 100% !important;
+            background: #90ee90 !important;
+        }
+        
+        /* Pastikan indikator aktif tetap muncul meski ada hover */
+        .nav-link.active:hover::after {
+            width: 100% !important;
+            background: #90ee90 !important;
+        }
+        
+        /* Navbar Scroll Progress */
+        .scroll-progress-container { 
+            position: absolute; 
+            bottom: -20px; 
+            left: 0; 
+            width: 100%; 
+            height: 3px; 
+            background: rgba(107, 142, 35, 0.1); 
+        }
+        .scroll-progress-bar { 
+
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent-green), var(--light-green)); 
+            transition: width 0.1s linear; 
+        }
+        
+        /* Mobile Top Navigation */
+        .mobile-top-nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(26, 61, 10, 0.3);
+            border-bottom: 1px solid rgba(107, 142, 35, 0.2);
+            z-index: 1050 !important;
+            padding: 0.75rem 0;
+            height: 70px;
+            transform: none !important;
+            will-change: auto;
+        }
+
+        /* Tabs visibility and colors - simple black text, no transitions */
+        .nav-tabs .nav-link {
+            color: #000000 !important;
+            font-weight: 600;
+            transition: none !important;
+        }
+        .nav-tabs .nav-link:hover { color: #000000 !important; }
+        .nav-tabs .nav-link.active {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+            border-color: #d1e7dd #d1e7dd #ffffff !important; /* bottom blends */
+        }
+        .nav-tabs {
+            --bs-nav-tabs-border-color: #d1e7dd;
+            --bs-nav-tabs-link-hover-border-color: #cfe8cf #cfe8cf #d1e7dd;
+        }
+        
+        .mobile-top-nav .navbar-brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f5f5dc !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .mobile-top-nav .navbar-brand:hover {
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+        
+        .mobile-top-nav .navbar-brand i {
+            color: #90ee90;
+            font-size: 1rem;
+        }
+        
+        /* Mobile Scroll Progress */
+        .mobile-scroll-progress-container { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 3px; 
+            background: rgba(107, 142, 35, 0.2); 
+        }
+        
+        .mobile-scroll-progress-bar { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #90ee90, #ffffff); 
+            transition: width 0.1s linear; 
+        }
+        
+        /* Ensure mobile navbars stay fixed */
+        @media (max-width: 991.98px) {
+            .mobile-top-nav,
+            .bottom-nav {
+                position: fixed !important;
+                transform: none !important;
+                transition: none !important;
+                will-change: auto !important;
+            }
+            
+            .mobile-top-nav {
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            
+            .bottom-nav {
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            
+            /* Disable transforms on layout wrappers that can break fixed positioning in some mobile browsers */
+            html, body, main, header, footer,
+            .hero-section, .page-wrapper, .container,
+            [data-animate] {
+                transform: none !important;
+            }
+
+            /* Prevent any transform or animation on mobile navbars */
+            .mobile-top-nav *,
+            .bottom-nav * {
+                transform: none !important;
+            }
+            
+            /* Prevent horizontal overflow on mobile */
+            .container {
+                max-width: 100vw !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+            
+            /* Fix carousel overflow */
+            .hero-carousel {
+                overflow: hidden;
+            }
+            
+            .carousel-slide {
+                overflow: hidden;
+            }
+        }
+        
+        /* Bottom Navigation - Modern & Simple (Mobile) */
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: linear-gradient(135deg, #1a3d0a 0%, #2d5016 50%, #4a7c59 100%);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 -2px 20px rgba(26, 61, 10, 0.3);
+            border-top: 1px solid rgba(107, 142, 35, 0.3);
+            z-index: 1000 !important;
+            padding: 0.5rem 0;
+            transform: none !important;
+            will-change: auto;
+        }
+        
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 0.5rem;
+            color: #f5f5dc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin: 0.25rem;
+            position: relative;
+        }
+        
+        .bottom-nav .nav-item:hover {
+            background: rgba(144, 238, 144, 0.2);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .bottom-nav .nav-item.active {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: var(--primary-green) !important;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .bottom-nav .nav-item.active i {
+            color: var(--primary-green) !important;
+        }
+        
+        .bottom-nav .nav-item.active span {
+            color: var(--primary-green) !important;
+            font-weight: 600;
+        }
+        
+        /* Pastikan indikator aktif tetap muncul meski ada hover */
+        .bottom-nav .nav-item.active:hover {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: var(--primary-green) !important;
+        }
+        
+        .bottom-nav .nav-item.active:hover i {
+            color: var(--primary-green) !important;
+        }
+        
+        .bottom-nav .nav-item.active:hover span {
+            color: var(--primary-green) !important;
+        }
+        
+        .bottom-nav .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .bottom-nav .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: block;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 2rem 0 2rem; /* Reduced padding since navbar is now simpler */
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6ffe6 50%, #f0fff0 100%);
+            position: relative;
+            overflow: hidden;
+            will-change: auto; /* reduce new stacking context creation */
+            margin-top: 0; /* Ensure no margin conflicts */
+        }
+        
+        /* Desktop hero section needs more top padding */
+        @media (min-width: 992px) {
+            .hero-section {
+                padding: 4rem 0 2rem;
+            }
+        }
+        
+        /* Hero Section with Carousel (Home page only) */
+        .hero-carousel-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: none; /* Remove default background for carousel */
+        }
+        /* Keep large sizing on home hero only */
+        .hero-carousel-section .hero-content { padding: 4rem 3rem; border-radius: 30px; max-width: 700px; background: linear-gradient(135deg, rgba(255,255,255,0.90) 0%, rgba(248,255,248,0.82) 50%, rgba(255,255,255,0.88) 100%); }
+        .hero-carousel-section .hero-title { font-size: 2.8rem; }
+        .hero-carousel-section .hero-subtitle { font-size: 1.4rem; }
+        
+        /* Hero Carousel */
+        .hero-carousel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(45, 80, 22, 0.6) 50%, rgba(0, 0, 0, 0.4) 100%);
+        }
+        
+        /* Floating Particles */
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(107, 142, 35, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .particle:nth-child(1) {
+            width: 8px;
+            height: 8px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 8s;
+        }
+        
+        .particle:nth-child(2) {
+            width: 12px;
+            height: 12px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            animation-duration: 10s;
+        }
+        
+        .particle:nth-child(3) {
+            width: 6px;
+            height: 6px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+            animation-duration: 7s;
+        }
+        
+        .particle:nth-child(4) {
+            width: 10px;
+            height: 10px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 1s;
+            animation-duration: 9s;
+        }
+        
+        .particle:nth-child(5) {
+            width: 14px;
+            height: 14px;
+            top: 70%;
+            left: 50%;
+            animation-delay: 3s;
+            animation-duration: 11s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23a9d3a9" opacity="0.3"/><circle cx="80" cy="30" r="1.5" fill="%2398fb98" opacity="0.4"/><circle cx="60" cy="70" r="1" fill="%238fbc8f" opacity="0.3"/><circle cx="30" cy="80" r="2.5" fill="%2390ee90" opacity="0.2"/></svg>');
+            background-size: 200px 200px;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.92) 0%, 
+                rgba(248, 255, 248, 0.85) 50%, 
+                rgba(255, 255, 255, 0.90) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem 2rem; /* compact default for inner pages */
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(107, 142, 35, 0.2);
+            max-width: 680px;
+            margin: 0 auto;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: heroContentFloat 6s ease-in-out infinite;
+        }
+        
+        .hero-content:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 35px 70px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes heroContentFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Carousel Dots */
+        .carousel-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--accent-green);
+            transform: scale(1.2);
+        }
+        
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .hero-logo {
+            animation: logoGlow 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 20px rgba(107, 142, 35, 0.4));
+            transition: all 0.3s ease;
+        }
+        
+        .hero-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 30px rgba(107, 142, 35, 0.6));
+        }
+        
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 20px rgba(107, 142, 35, 0.4)); }
+            100% { filter: drop-shadow(0 0 30px rgba(107, 142, 35, 0.6)); }
+        }
+        
+        .hero-title {
+            color: var(--primary-green);
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2rem; /* compact default */
+            font-weight: 800;
+            text-shadow: 
+                2px 2px 8px rgba(0,0,0,0.3),
+                0 0 20px rgba(107, 142, 35, 0.2);
+            margin-bottom: 1rem;
+            text-align: center;
+            position: relative;
+            animation: titleSlideIn 1s ease-out;
+            background: linear-gradient(45deg, var(--primary-green), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            color: var(--secondary-green);
+            font-size: 1.2rem; /* compact default */
+            font-weight: 600;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            animation: subtitleFadeIn 1.5s ease-out 0.3s both;
+            position: relative;
+        }
+        
+        .hero-subtitle::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--light-green));
+            border-radius: 2px;
+            animation: underlineExpand 2s ease-out 1s both;
+        }
+        
+        @keyframes titleSlideIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(-30px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes subtitleFadeIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes underlineExpand {
+            0% { width: 0; }
+            100% { width: 60px; }
+        }
+        
+        /* Cards */
+        .card {
+            border: 2px solid var(--light-green);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 16px rgba(45, 80, 22, 0.2);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,255,248,0.85) 100%);
+            backdrop-filter: blur(6px);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--light-green), var(--pale-green), var(--mint-green), var(--light-green));
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(45, 80, 22, 0.3);
+            border-color: var(--accent-green);
+        }
+        
+        .card-title {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .card-text {
+            color: var(--secondary-green);
+            line-height: 1.6;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Hero Section Buttons */
+        .hero-section .btn {
+            min-width: 220px;
+            height: 60px;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transform: translateY(0);
+            border: 2px solid;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: buttonSlideIn 1s ease-out 0.8s both;
+        }
+        
+        .hero-section .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .hero-section .btn:hover::before {
+            left: 100%;
+        }
+        
+        .hero-section .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .hero-section .btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+        
+        .hero-section .btn-primary {
+            background: linear-gradient(135deg, 
+                var(--accent-green) 0%, 
+                var(--light-green) 50%, 
+                var(--pale-green) 100%);
+            color: white;
+            border-color: var(--accent-green);
+            position: relative;
+        }
+        
+        .hero-section .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
+            border-radius: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hero-section .btn-primary:hover::after {
+            opacity: 1;
+        }
+        
+        .hero-section .btn-primary:hover {
+            background: linear-gradient(135deg, 
+                var(--light-green) 0%, 
+                var(--pale-green) 50%, 
+                var(--accent-green) 100%);
+            color: white;
+        }
+        
+        .hero-section .btn-outline-primary {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-green);
+            border-color: var(--accent-green);
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-section .btn-outline-primary:hover {
+            background: linear-gradient(135deg, 
+                var(--accent-green) 0%, 
+                var(--light-green) 100%);
+            color: white;
+            border-color: var(--accent-green);
+        }
+        
+        @keyframes buttonSlideIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        /* Quick Stats Section */
+        .quick-stats-section {
+            background: linear-gradient(135deg, #f8fff8 0%, #e6ffe6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quick-stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="%23a9d3a9" opacity="0.2"/><circle cx="80" cy="30" r="1.5" fill="%2398fb98" opacity="0.3"/><circle cx="60" cy="70" r="0.8" fill="%238fbc8f" opacity="0.2"/></svg>');
+            background-size: 150px 150px;
+            z-index: 1;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(107, 142, 35, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary-green);
+            margin: 0;
+        }
+        
+        /* Highlights Section */
+        .highlights-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fff8 100%);
+            position: relative;
+        }
+        
+        .badge-circle {
+            width: 42px; height: 42px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--accent-green), var(--light-green)); color: #fff; box-shadow: 0 6px 16px rgba(45,80,22,.25);
+        }
+
+        .highlights-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+        
+        .highlights-description {
+            font-size: 1.1rem;
+            color: var(--secondary-green);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-item { display:flex; align-items:center; gap:.6rem; padding:.75rem 1rem; border:1px solid rgba(107,142,35,.15); border-radius:12px; background: rgba(255,255,255,.85); box-shadow: 0 6px 14px rgba(0,0,0,.06); }
+        .feature-item i { color: var(--accent-green); }
+        
+        .card-frame { padding: .75rem; border-radius: 1.25rem; background: linear-gradient(135deg, rgba(107,142,35,.15), rgba(144,238,144,.15)); box-shadow: 0 12px 30px rgba(45,80,22,.15); }
+        .object-cover { object-fit: cover; }
+        .parallax-lite { transform: translateZ(0); transition: transform .6s ease; }
+        .card-frame:hover .parallax-lite { transform: scale(1.03); }
+        
+        /* Sponsors Section */
+        .sponsors-section {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6ffe6 100%);
+            position: relative;
+        }
+        
+        .sponsor-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(107, 142, 35, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sponsor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent-green);
+        }
+        
+        .sponsor-logo {
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .sponsor-card:hover .sponsor-logo {
+            transform: scale(1.1);
+        }
+        
+        .sponsor-logo i {
+            filter: drop-shadow(0 4px 8px rgba(107, 142, 35, 0.2));
+            transition: all 0.3s ease;
+        }
+        
+        .sponsor-card:hover .sponsor-logo i {
+            filter: drop-shadow(0 6px 12px rgba(107, 142, 35, 0.3));
+        }
+        
+        .sponsor-name {
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+        
+        .sponsor-type {
+            font-size: 0.9rem;
+            color: var(--secondary-green);
+            margin: 0;
+            font-weight: 500;
+            background: rgba(107, 142, 35, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--light-green) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.15)"/><circle cx="60" cy="70" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 200px 200px;
+            z-index: 1;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cta-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+        
+        .cta-buttons .btn {
+            min-width: 200px;
+            height: 50px;
+            font-weight: 600;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        
+        .cta-buttons .btn-primary {
+            background: white;
+            color: var(--accent-green);
+            border: 2px solid white;
+        }
+        
+        .cta-buttons .btn-primary:hover {
+            background: transparent;
+            color: white;
+            border-color: white;
+        }
+        
+        .cta-buttons .btn-outline-primary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .cta-buttons .btn-outline-primary:hover {
+            background: white;
+            color: var(--accent-green);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-green), var(--light-green), var(--pale-green));
+            color: var(--primary-green);
+            border-color: var(--secondary-green);
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--light-green), var(--pale-green), var(--mint-green));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(45, 80, 22, 0.3);
+            color: var(--primary-green);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-green);
+            border: 2px solid var(--accent-green);
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(45deg, var(--accent-green), var(--light-green));
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ========== Scroll-in Animations (Global) ========== */
+        [data-animate] { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+        [data-animate].in-view { opacity: 1; transform: none; }
+        [data-animate="fade-up"] { transform: translateY(18px); }
+        [data-animate="fade-right"] { transform: translateX(-24px); }
+        [data-animate="fade-left"] { transform: translateX(24px); }
+        [data-animate="zoom-in"] { transform: scale(.95); }
+        [data-animate="zoom-in"].in-view { transform: scale(1); }
+        
+        /* Card Button Styling */
+        .card .btn-sm {
+            min-width: 70px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            border-radius: 20px;
+        }
+        
+        .card .btn-outline-secondary {
+            color: var(--primary-green);
+            border-color: var(--accent-green);
+            background: transparent;
+        }
+        
+        .card .btn-outline-secondary:hover {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+        
+        .card .btn-outline-primary {
+            color: var(--primary-green);
+            border-color: var(--accent-green);
+            background: transparent;
+        }
+        
+        .card .btn-outline-primary:hover {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+        
+        /* Badges */
+        .badge {
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 2px solid;
+        }
+        
+        .badge.bg-success {
+            background: linear-gradient(45deg, #228b22, #32cd32, #90ee90);
+            color: white;
+            border-color: #006400;
+        }
+        
+        .badge.bg-warning {
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #fff8dc);
+            color: var(--primary-green);
+            border-color: #daa520;
+        }
+        
+        .badge.bg-secondary {
+            background: linear-gradient(45deg, var(--natural-brown), var(--earth-tone));
+            color: white;
+            border-color: #654321;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--secondary-green);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            /* Prevent horizontal scrolling on small screens */
+            body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+            
+            /* Mobile Hero Adjustments */
+            .hero-carousel-section { 
+                min-height: 86vh; 
+                overflow: hidden;
+            }
+            .hero-carousel-section .hero-content { 
+                padding: 2rem 1.25rem; 
+                border-radius: 18px; 
+                max-width: 92%; 
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+            .hero-carousel-section .hero-title { font-size: 1.8rem; }
+            .hero-carousel-section .hero-subtitle { font-size: 1rem; }
+
+            /* Generic Hero */
+            .hero-section { padding: 2rem 0 1.5rem; }
+            .hero-content { 
+                padding: 1.5rem 1.25rem; 
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            .hero-title { font-size: 1.6rem; }
+            .hero-subtitle { font-size: .95rem; }
+
+            /* Buttons */
+            .hero-section .btn { 
+                min-width: 150px; 
+                height: auto; 
+                padding: .8rem 1.1rem; 
+                font-size: .95rem; 
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            .hero-section .btn + .btn { margin-top: .6rem; }
+
+            /* CTA buttons become stacked and full-width */
+            .cta-buttons { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: .75rem; 
+                width: 100%;
+            }
+            .cta-buttons .btn { 
+                width: 100%; 
+                height: auto; 
+                padding: .9rem 1rem; 
+                font-size: 1rem; 
+                justify-content: center; 
+                box-sizing: border-box;
+            }
+
+            /* Dots */
+            .carousel-dots { bottom: 16px; }
+            .dot { width: 9px; height: 9px; }
+
+            /* Highlights */
+            .highlights-title { font-size: 1.5rem; }
+            .feature-item { padding: .6rem .8rem; }
+            
+            /* Mobile Bottom Nav */
+            .bottom-nav .nav-item {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .bottom-nav .nav-item i {
+                font-size: 1.1rem;
+            }
+            
+            .bottom-nav .nav-item span {
+                font-size: 0.65rem;
+            }
+            
+            /* Fix any elements that might cause horizontal overflow */
+            .card, .stat-card, .sponsor-card {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* Sponsor cards mobile adjustments */
+            .sponsor-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .sponsor-logo i {
+                font-size: 3rem !important;
+            }
+            
+            .sponsor-name {
+                font-size: 1rem;
+            }
+            
+            .sponsor-type {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 577px) and (max-width: 768px) {
+            .hero-section {
+                padding: 5rem 0 2rem; /* Slightly less padding on mobile */
+            }
+            
+            .hero-carousel-section {
+                min-height: 80vh;
+            }
+            
+            .hero-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+                max-width: 90%;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-section .btn {
+                min-width: 180px;
+                height: 50px;
+                font-size: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .highlights-title {
+                font-size: 1.8rem;
+            }
+            
+            .highlights-description {
+                font-size: 1rem;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .cta-description {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons .btn {
+                min-width: 160px;
+                height: 45px;
+                font-size: 0.95rem;
+            }
+            
+            .carousel-dots {
+                bottom: 20px;
+            }
+            
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            /* Mobile button adjustments */
+            .hero-section .btn {
+                min-width: 180px;
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+            
+            .hero-section .row.g-3 {
+                gap: 1rem !important;
+            }
+            
+            .bottom-nav .nav-item {
+                padding: 0.75rem 0.25rem;
+            }
+            
+            .bottom-nav .nav-item i {
+                font-size: 1.3rem;
+            }
+            
+            .bottom-nav .nav-item span {
+                display: none;
+            }
+            
+            /* Mobile card button adjustments */
+            .card .btn-sm {
+                min-width: 60px;
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Contact Form Fixes */
+        .form-control, .form-select {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .form-group {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Prevent any element from causing horizontal overflow */
+        .row {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+        .col-auto, .col-sm, .col-md, .col-lg, .col-xl {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner-border {
+            color: var(--accent-green);
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            color: #f5f5dc;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer h5 {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .footer a {
+            color: #f5f5dc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation - Desktop Only -->
+    <nav class="navbar navbar-expand-lg fixed-top d-none d-lg-block">
+        <div class="container position-relative d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="<?= base_url() ?>">
+                <i class="fas fa-mountain"></i>
+                CVI WIROTAMAN
+            </a>
+            
+            <!-- Desktop Navigation Menu -->
+            <div class="navbar-nav">
+                <a class="nav-link" href="<?= base_url() ?>">Home</a>
+                <a class="nav-link" href="<?= base_url('event') ?>">Events</a>
+                <a class="nav-link" href="<?= base_url('merchandise') ?>">Merchandise</a>
+                <a class="nav-link" href="<?= base_url('campground') ?>">Campground</a>
+                <a class="nav-link" href="<?= base_url('gallery') ?>">Gallery</a>
+                <a class="nav-link" href="<?= base_url('contact') ?>">Contact</a>
+            </div>
+            
+            <div class="scroll-progress-container">
+                <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Top Navigation -->
+    <nav class="mobile-top-nav d-lg-none">
+        <div class="container d-flex justify-content-center align-items-center h-100">
+            <a class="navbar-brand" href="<?= base_url() ?>">
+                <i class="fas fa-mountain"></i>
+                CVI WIROTAMAN
+            </a>
+        </div>
+        <div class="mobile-scroll-progress-container">
+            <div class="mobile-scroll-progress-bar" id="mobileScrollProgressBar"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <?php
+        // Check if this is home page
+        $isHomePage = (isset($_GET['page']) && $_GET['page'] === '') || (!isset($_GET['page']) && $_SERVER['REQUEST_URI'] === '/');
+        
+        if ($isHomePage) {
+            // Home page - include its own hero section
+            if (isset($content)) {
+                echo $content;
+            }
+        } else {
+            // Other pages - no header, just content
+            if (isset($content)) {
+                echo $content;
+            }
+        }
+        ?>
+    </main>
+
+    <!-- Bottom Navigation - Mobile Only -->
+    <nav class="bottom-nav d-lg-none">
+        <div class="container">
+            <div class="row g-0">
+                <div class="col-2">
+                    <a href="<?= base_url() ?>" class="nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+                <div class="col-2">
+                    <a href="<?= base_url('event') ?>" class="nav-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Events</span>
+                    </a>
+                </div>
+                <div class="col-2">
+                    <a href="<?= base_url('merchandise') ?>" class="nav-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Shop</span>
+                    </a>
+                </div>
+                <div class="col-2">
+                    <a href="<?= base_url('campground') ?>" class="nav-item">
+                        <i class="fas fa-campground"></i>
+                        <span>Camp</span>
+                    </a>
+                </div>
+                <div class="col-2">
+                    <a href="<?= base_url('gallery') ?>" class="nav-item">
+                        <i class="fas fa-images"></i>
+                        <span>Gallery</span>
+                    </a>
+                </div>
+                <div class="col-2">
+                    <a href="<?= base_url('contact') ?>" class="nav-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-mountain me-2"></i>CVI Wirotaman</h5>
+                    <p>Komunitas Pecinta Alam Jawa Timur yang berdedikasi untuk melestarikan alam dan mengembangkan kegiatan outdoor.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="<?= base_url() ?>">Home</a></li>
+                        <li><a href="<?= base_url('event') ?>">Events</a></li>
+                        <li><a href="<?= base_url('campground') ?>">Campground</a></li>
+                        <li><a href="<?= base_url('gallery') ?>">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p><i class="fas fa-envelope me-2"></i>info@cviwirotaman.com</p>
+                    <p><i class="fas fa-phone me-2"></i>+62 812-3456-7890</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>Jawa Timur, Indonesia</p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--light-green);">
+            <div class="text-center">
+                <p>&copy; 2024 CVI Wirotaman. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading state to forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+                    submitBtn.disabled = true;
+                }
+            });
+        });
+        
+        // Navbar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navbar = document.querySelector('.navbar');
+            const progressBar = document.getElementById('scrollProgressBar');
+            const mobileProgressBar = document.getElementById('mobileScrollProgressBar');
+            
+            // Active state for navigation
+            function setActiveNav() {
+                console.log('Current path:', currentPath); // Debug log
+                
+                // Desktop navigation
+                const desktopNavItems = document.querySelectorAll('.navbar .nav-link');
+                desktopNavItems.forEach(item => {
+                    const href = item.getAttribute('href');
+                    console.log('Desktop nav href:', href); // Debug log
+                    
+                    // Remove all active classes first
+                    item.classList.remove('active');
+                    
+                    // Check for exact match or home page
+                    if (currentPath === href || 
+                        (currentPath === '/' && href === '<?= base_url() ?>') ||
+                        (currentPath === '' && href === '<?= base_url() ?>') ||
+                        (currentPath === '/index.php' && href === '<?= base_url() ?>')) {
+                        item.classList.add('active');
+                        console.log('Desktop active:', href);
+                    }
+                    
+                    // Check for partial matches (e.g., /event/detail/1 should highlight Events)
+                    if (!item.classList.contains('active')) {
+                        if (href.includes('event') && currentPath.startsWith('/event')) {
+                            item.classList.add('active');
+                            console.log('Desktop partial active (event):', href);
+                        } else if (href.includes('merchandise') && currentPath.startsWith('/merchandise')) {
+                            item.classList.add('active');
+                            console.log('Desktop partial active (merchandise):', href);
+                        } else if (href.includes('campground') && currentPath.startsWith('/campground')) {
+                            item.classList.add('active');
+                            console.log('Desktop partial active (campground):', href);
+                        } else if (href.includes('gallery') && currentPath.startsWith('/gallery')) {
+                            item.classList.add('active');
+                            console.log('Desktop partial active (gallery):', href);
+                        } else if (href.includes('contact') && currentPath.startsWith('/contact')) {
+                            item.classList.add('active');
+                            console.log('Desktop partial active (contact):', href);
+                        }
+                    }
+                });
+                
+                // Mobile bottom navigation
+                const mobileNavItems = document.querySelectorAll('.bottom-nav .nav-item');
+                mobileNavItems.forEach(item => {
+                    const href = item.getAttribute('href');
+                    console.log('Mobile nav href:', href); // Debug log
+                    
+                    // Remove all active classes first
+                    item.classList.remove('active');
+                    
+                    // Check for exact match or home page
+                    if (currentPath === href || 
+                        (currentPath === '/' && href === '<?= base_url() ?>') ||
+                        (currentPath === '' && href === '<?= base_url() ?>') ||
+                        (currentPath === '/index.php' && href === '<?= base_url() ?>')) {
+                        item.classList.add('active');
+                        console.log('Mobile active:', href);
+                    }
+                    
+                    // Check for partial matches
+                    if (!item.classList.contains('active')) {
+                        if (href.includes('event') && currentPath.startsWith('/event')) {
+                            item.classList.add('active');
+                            console.log('Mobile partial active (event):', href);
+                        } else if (href.includes('merchandise') && currentPath.startsWith('/merchandise')) {
+                            item.classList.add('active');
+                            console.log('Mobile partial active (merchandise):', href);
+                        } else if (href.includes('campground') && currentPath.startsWith('/campground')) {
+                            item.classList.add('active');
+                            console.log('Mobile partial active (campground):', href);
+                        } else if (href.includes('gallery') && currentPath.startsWith('/gallery')) {
+                            item.classList.add('active');
+                            console.log('Mobile partial active (gallery):', href);
+                        } else if (href.includes('contact') && currentPath.startsWith('/contact')) {
+                            item.classList.add('active');
+                            console.log('Mobile partial active (contact):', href);
+                        }
+                    }
+                });
+            }
+            
+            // Navbar scroll effect
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Desktop scroll progress bar
+                if (progressBar) {
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    progressBar.style.width = scrolled + '%';
+                }
+                
+                // Mobile scroll progress bar
+                if (mobileProgressBar) {
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    mobileProgressBar.style.width = scrolled + '%';
+                }
+            }
+            
+            // Initialize
+            setActiveNav();
+            handleScroll();
+            
+            // Event listeners
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Re-run active nav detection when page changes (for SPA-like behavior)
+            window.addEventListener('popstate', setActiveNav);
+            
+            // Also run when page loads completely
+            window.addEventListener('load', setActiveNav);
+            
+            // Debug: Log all navigation links
+            console.log('All desktop nav links:', document.querySelectorAll('.navbar .nav-link'));
+            console.log('All mobile nav links:', document.querySelectorAll('.bottom-nav .nav-item'));
+        });
+
+        // Intersection Observer to add 'in-view' class for [data-animate]
+        (function(){
+            const animated = document.querySelectorAll('[data-animate]');
+            if (!('IntersectionObserver' in window) || animated.length === 0) {
+                animated.forEach(el => el.classList.add('in-view'));
+                return;
+            }
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+            animated.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+</html>
+
+
+
