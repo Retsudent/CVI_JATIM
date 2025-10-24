@@ -442,8 +442,14 @@ class AdminCrud extends BaseController
     {
         $campModel = new CampgroundModel();
         $rows = $campModel->orderBy('created_at', 'DESC')->findAll();
+        // Compute totals for the stats cards
+        $totalLocations = is_array($rows) ? count($rows) : 0;
+        $activeLocations = $campModel->where('status', 'active')->countAllResults();
+
         return $this->response->setBody(view('admin/campground/index', [
             'locations' => $rows,
+            'totalLocations' => (int)$totalLocations,
+            'activeLocations' => (int)$activeLocations,
             'session' => $this->session
         ]));
     }

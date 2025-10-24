@@ -213,7 +213,7 @@
 							</svg>
 					</div>
 					</div>
-					<div class="stat-value">4</div>
+					<div class="stat-value"><?= isset($totalLocations) ? (int)$totalLocations : 0 ?></div>
 					<div class="stat-label">Total Locations</div>
 				</div>
 				<div class="stat-card">
@@ -224,7 +224,7 @@
 							</svg>
 					</div>
 					</div>
-					<div class="stat-value">4</div>
+					<div class="stat-value"><?= isset($activeLocations) ? (int)$activeLocations : 0 ?></div>
 					<div class="stat-label">Active Locations</div>
 				</div>
 			</div>
