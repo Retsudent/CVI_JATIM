@@ -229,7 +229,7 @@
 							</svg>
 						</div>
 					</div>
-					<div class="stat-value">8</div>
+					<div class="stat-value"><?= isset($totalProducts) ? (int)$totalProducts : 0 ?></div>
 					<div class="stat-label">Total Products</div>
 				</div>
 				<div class="stat-card">
@@ -240,7 +240,7 @@
 							</svg>
 						</div>
 					</div>
-					<div class="stat-value">6</div>
+					<div class="stat-value"><?= isset($activeProducts) ? (int)$activeProducts : 0 ?></div>
 					<div class="stat-label">Active Products</div>
 				</div>
 			</div>
@@ -259,12 +259,10 @@
 				
 				<div class="products-grid">
 <?php
-try {
-    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    $rows = $pdo->query('SELECT id, name, description, price, stock, image, category, status FROM merchandise ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
-} catch (Throwable $e) { $rows = []; }
-if (!$rows) {
-    echo '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">Tidak ada data produk.</div>';
+// Use products provided by the controller (indexMerch)
+$rows = isset($products) && is_array($products) ? $products : [];
+if (empty($rows)) {
+	echo '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">Tidak ada data produk.</div>';
 }
 foreach ($rows as $r):
     $img = $r['image'] ? base_url('assets/images/merch/' . htmlspecialchars($r['image'])) : base_url('assets/images/placeholder.jpg');

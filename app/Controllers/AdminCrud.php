@@ -272,8 +272,15 @@ class AdminCrud extends BaseController
     {
         $merchModel = new MerchandiseModel();
         $rows = $merchModel->orderBy('created_at', 'DESC')->findAll();
+        // Compute totals for dashboard stats
+        $totalProducts = is_array($rows) ? count($rows) : 0;
+        // Active = status 'available' and stock > 0
+        $activeProducts = $merchModel->where('status', 'available')->where('stock >', 0)->countAllResults();
+
         return $this->response->setBody(view('admin/merchandise/index', [
             'products' => $rows,
+            'totalProducts' => (int)$totalProducts,
+            'activeProducts' => (int)$activeProducts,
             'session' => $this->session
         ]));
     }
