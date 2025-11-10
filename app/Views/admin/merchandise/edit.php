@@ -93,19 +93,30 @@
             
             <div class="form-group">
                 <label>Gambar Produk</label>
-                <div class="file-upload-area" onclick="document.getElementById('merch-edit-image-file-input').click()">
-                    <input type="file" id="merch-edit-image-file-input" name="image_file" accept="image/*" onchange="previewMerchEditImage(this)" />
-                    <div class="file-upload-text">📁 Klik untuk memilih gambar dari komputer</div>
-                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Max ukuran sesuai konfigurasi server.</div>
-                </div>
-                <div id="merch-edit-image-preview" style="display:none; margin-top:1rem;">
-                    <img id="merch-edit-preview-img" src="" alt="Preview" style="max-width:300px;border-radius:8px;"/>
-                </div>
                 <?php if (!empty($product['image'])): ?>
-                    <div style="margin-top:.5rem;">Gambar saat ini: <a href="<?= esc($product['image']) ?>" target="_blank">Lihat gambar</a></div>
+                <div class="image-preview" style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 8px; font-weight: 600; color: var(--gray-700);">Gambar Saat Ini:</div>
+                    <img src="<?= esc($product['image']) ?>" alt="Current image" />
+                    <div style="margin-top: 8px;">
+                        <a href="<?= esc($product['image']) ?>" target="_blank" class="btn btn-secondary" style="font-size: 13px; padding: 8px 16px;">Lihat Gambar</a>
+                    </div>
+                </div>
                 <?php endif; ?>
-                <div class="form-help">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
-                <input type="text" name="image" value="<?= htmlspecialchars($product['image']) ?>" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top:.5rem;" />
+                <div class="file-upload-area" id="merch-edit-upload-area" onclick="document.getElementById('merch-edit-image-file-input').click()">
+                    <input type="file" id="merch-edit-image-file-input" name="image_file" accept="image/*" onchange="previewMerchEditImage(this)" />
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); margin-bottom: 12px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <div class="file-upload-text">Klik atau seret gambar baru ke sini untuk upload</div>
+                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Ukuran maksimal sesuai konfigurasi server.</div>
+                </div>
+                <div id="merch-edit-image-preview">
+                    <img id="merch-edit-preview-img" src="" alt="Preview" />
+                </div>
+                <div class="form-help" style="margin-top: 12px;">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
+                <input type="text" name="image" class="form-control" value="<?= htmlspecialchars($product['image']) ?>" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top: 8px;" />
             </div>
             
             <div class="form-group">
@@ -164,7 +175,41 @@ function previewMerchEditImage(input) {
     };
     reader.readAsDataURL(file);
 }
+
+// Drag and Drop functionality
+const uploadArea = document.getElementById('merch-edit-upload-area');
+const fileInput = document.getElementById('merch-edit-image-file-input');
+
+if (uploadArea && fileInput) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        }, false);
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            previewMerchEditImage(fileInput);
+        }
+    }, false);
+}
 </script>
-
-
 

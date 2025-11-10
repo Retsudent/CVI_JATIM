@@ -115,19 +115,30 @@
             
             <div class="form-group">
                 <label>Gambar Campground</label>
-                <div class="file-upload-area" onclick="document.getElementById('camp-edit-image-file-input').click()">
-                    <input type="file" id="camp-edit-image-file-input" name="image_file" accept="image/*" onchange="previewCampEditImage(this)" />
-                    <div class="file-upload-text">📁 Klik untuk memilih gambar dari komputer</div>
-                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Max ukuran sesuai konfigurasi server.</div>
-                </div>
-                <div id="camp-edit-image-preview" style="display:none; margin-top:1rem;">
-                    <img id="camp-edit-preview-img" src="" alt="Preview" style="max-width:300px;border-radius:8px;"/>
-                </div>
                 <?php if (!empty($camp['image'])): ?>
-                    <div style="margin-top:.5rem;">Gambar saat ini: <a href="<?= esc($camp['image']) ?>" target="_blank">Lihat gambar</a></div>
+                <div class="image-preview" style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 8px; font-weight: 600; color: var(--gray-700);">Gambar Saat Ini:</div>
+                    <img src="<?= esc($camp['image']) ?>" alt="Current image" />
+                    <div style="margin-top: 8px;">
+                        <a href="<?= esc($camp['image']) ?>" target="_blank" class="btn btn-secondary" style="font-size: 13px; padding: 8px 16px;">Lihat Gambar</a>
+                    </div>
+                </div>
                 <?php endif; ?>
-                <div class="form-help">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
-                <input type="text" name="image" value="<?= htmlspecialchars($camp['image']) ?>" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top:.5rem;" />
+                <div class="file-upload-area" id="camp-edit-upload-area" onclick="document.getElementById('camp-edit-image-file-input').click()">
+                    <input type="file" id="camp-edit-image-file-input" name="image_file" accept="image/*" onchange="previewCampEditImage(this)" />
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); margin-bottom: 12px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <div class="file-upload-text">Klik atau seret gambar baru ke sini untuk upload</div>
+                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Ukuran maksimal sesuai konfigurasi server.</div>
+                </div>
+                <div id="camp-edit-image-preview">
+                    <img id="camp-edit-preview-img" src="" alt="Preview" />
+                </div>
+                <div class="form-help" style="margin-top: 12px;">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
+                <input type="text" name="image" class="form-control" value="<?= htmlspecialchars($camp['image']) ?>" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top: 8px;" />
             </div>
         </div>
         
@@ -154,7 +165,41 @@ function previewCampEditImage(input) {
     };
     reader.readAsDataURL(file);
 }
+
+// Drag and Drop functionality
+const uploadArea = document.getElementById('camp-edit-upload-area');
+const fileInput = document.getElementById('camp-edit-image-file-input');
+
+if (uploadArea && fileInput) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        }, false);
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            previewCampEditImage(fileInput);
+        }
+    }, false);
+}
 </script>
-
-
 

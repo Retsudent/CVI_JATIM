@@ -24,9 +24,15 @@
 		
 		.tab-buttons {
 			display: flex;
-			flex-direction: column; /* stack buttons above the filter */
-			gap: 8px;
+			flex-direction: column;
+			gap: 12px;
 			margin-bottom: 24px;
+		}
+		
+		.tab-btn-row {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
 		}
 		
 		.tab-btn {
@@ -41,6 +47,10 @@
 			display: flex;
 			align-items: center;
 			gap: 8px;
+			white-space: nowrap;
+			flex: 1;
+			min-width: 150px;
+			justify-content: center;
 		}
 		
 		.tab-btn.active {
@@ -66,48 +76,83 @@
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		}
 		
+		.reviews-card-title {
+			font-size: 15px;
+			font-weight: 600;
+			color: #1f2937;
+			margin-bottom: 12px;
+		}
+
 		.review-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: flex-start;
-			margin-bottom: 12px;
+			gap: 12px;
+			flex-wrap: wrap;
 		}
 		
 		.review-user {
 			display: flex;
 			align-items: center;
 			gap: 12px;
+			flex: 1;
+			min-width: 200px;
 		}
 		
 		.user-avatar {
 			width: 40px;
 			height: 40px;
-			background: #f3f4f6;
-			border-radius: 50%;
+			background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-600) 100%);
+			border-radius: 10px;
+			color: white;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-weight: 600;
-			color: #6b7280;
+			font-weight: 700;
+			font-size: 16px;
+			box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
 		}
 		
-		.user-info h4 {
+		.review-user-info {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+		
+		.review-user-info h4 {
 			font-size: 16px;
 			font-weight: 600;
 			color: #111827;
-			margin: 0 0 4px 0;
+			margin: 0;
 		}
 		
-		.user-info p {
+		.review-user-info p {
 			font-size: 14px;
 			color: #6b7280;
 			margin: 0;
 		}
 		
-		.review-rating {
+		.review-user-email {
+			font-size: 13px;
+			color: #4b5563;
+			margin-top: 2px;
 			display: flex;
 			align-items: center;
+			gap: 4px;
+		}
+		
+		.review-user-email svg {
+			width: 14px;
+			height: 14px;
+			color: #6b7280;
+		}
+		
+		.review-rating {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
 			gap: 8px;
+			text-align: right;
 		}
 		
 		.stars {
@@ -183,6 +228,7 @@
 		.review-actions {
 			display: flex;
 			gap: 8px;
+			flex-wrap: wrap;
 		}
 		
 		.btn-sm {
@@ -194,6 +240,7 @@
 			align-items: center;
 			gap: 4px;
 			border: 1px solid;
+			white-space: nowrap;
 		}
 		
 		.btn-secondary {
@@ -206,6 +253,162 @@
 			background: #ef4444;
 			color: white;
 			border-color: #ef4444;
+		}
+		
+		#reviewsFilterForm {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		
+		#reviewsFilterForm label {
+			font-weight: 600;
+			white-space: nowrap;
+		}
+		
+		#reviewsFilterForm select,
+		#reviewsFilterForm input[type="date"] {
+			padding: 8px;
+			border-radius: 6px;
+			border: 1px solid #e5e7eb;
+			font-size: 14px;
+			min-width: 120px;
+		}
+		
+		/* Responsive Styles */
+		@media (max-width: 768px) {
+			.reviews-container {
+				padding: 16px;
+			}
+			
+			.tab-btn-row {
+				flex-direction: column;
+			}
+			
+			.tab-btn {
+				width: 100%;
+				min-width: auto;
+			}
+			
+			#reviewsFilterForm {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			
+			#reviewsFilterForm label {
+				margin-bottom: 4px;
+			}
+			
+			#reviewsFilterForm select,
+			#reviewsFilterForm input[type="date"],
+			#reviewsFilterForm button,
+			#reviewsFilterForm a {
+				width: 100%;
+				min-width: auto;
+			}
+			
+			.review-card {
+				padding: 16px;
+			}
+			
+			.reviews-card-title {
+				font-size: 14px;
+				margin-bottom: 8px;
+			}
+
+			.review-header {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 10px;
+			}
+
+			.review-user {
+				min-width: auto;
+			}
+
+			.review-rating {
+				align-items: flex-start;
+				width: 100%;
+				text-align: left;
+			}
+			
+			.review-actions {
+				flex-direction: column;
+			}
+			
+			.review-actions .btn-sm {
+				width: 100%;
+				justify-content: center;
+			}
+			
+			.review-user-info h4 {
+				font-size: 15px;
+			}
+			
+			.review-user-info p {
+				font-size: 13px;
+			}
+			
+			.review-text {
+				font-size: 13px;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.page-header {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 12px;
+			}
+			
+			.add-btn {
+				width: 100%;
+				justify-content: center;
+			}
+			
+			.reviews-container {
+				padding: 12px;
+			}
+			
+			.review-card {
+				padding: 12px;
+			}
+			
+			.user-avatar {
+				width: 36px;
+				height: 36px;
+				font-size: 14px;
+			}
+			
+			.stars {
+				gap: 1px;
+			}
+			
+			.star {
+				width: 14px;
+				height: 14px;
+			}
+			
+			.review-status {
+				font-size: 11px;
+				padding: 3px 6px;
+			}
+		}
+		
+		@media (min-width: 769px) and (max-width: 1024px) {
+			.tab-btn {
+				min-width: 140px;
+			}
+			
+			#reviewsFilterForm {
+				gap: 8px;
+			}
+			
+			#reviewsFilterForm select,
+			#reviewsFilterForm input[type="date"] {
+				min-width: 100px;
+			}
 		}
 	
 	</style>
@@ -265,35 +468,35 @@
 				?>
 
 				<div class="tab-buttons">
-					<div class="tab-btn-row" style="display:flex;gap:8px;margin-bottom:12px;">
-					<button class="tab-btn active" data-tab="merchandise">
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-							<line x1="3" y1="6" x2="21" y2="6"></line>
-						</svg>
-						Product Reviews
-					</button>
-					<button class="tab-btn" data-tab="campground">
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-							<circle cx="12" cy="10" r="3"></circle>
-						</svg>
-						Location Reviews
-					</button>
+					<div class="tab-btn-row">
+						<button class="tab-btn active" data-tab="merchandise">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+								<line x1="3" y1="6" x2="21" y2="6"></line>
+							</svg>
+							Product Reviews
+						</button>
+						<button class="tab-btn" data-tab="campground">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+								<circle cx="12" cy="10" r="3"></circle>
+							</svg>
+							Location Reviews
+						</button>
 					</div>
 
-					<form id="reviewsFilterForm" method="get" style="display:flex;gap:12px;align-items:center;margin-top:8px;margin-bottom:12px;">
+					<form id="reviewsFilterForm" method="get">
 						<input type="hidden" name="tab" id="filterTabInput" value="<?= htmlspecialchars($selectedTabParam ?? 'merchandise') ?>" />
-						<label style="font-weight:600;">Filter:</label>
-						<select name="rating" id="filterRating" style="padding:8px;border-radius:6px;border:1px solid #e5e7eb;">
+						<label>Filter:</label>
+						<select name="rating" id="filterRating">
 							<option value="">All ratings</option>
 							<?php for ($s = 1; $s <= 5; $s++): ?>
 								<option value="<?= $s ?>" <?= ($filterRating === $s) ? 'selected' : '' ?>><?= $s ?> star<?= $s>1 ? 's' : '' ?></option>
 							<?php endfor; ?>
 						</select>
-						<input type="date" name="date" id="filterDate" value="<?= htmlspecialchars($filterDate ?? '') ?>" style="padding:8px;border-radius:6px;border:1px solid #e5e7eb;" />
-						<button type="submit" class="tab-btn" style="padding:8px 12px;">Apply</button>
-						<a href="/admin/reviews" class="tab-btn" style="padding:8px 12px;">Clear</a>
+						<input type="date" name="date" id="filterDate" value="<?= htmlspecialchars($filterDate ?? '') ?>" />
+						<button type="submit" class="tab-btn">Apply</button>
+						<a href="/admin/reviews" class="tab-btn">Clear</a>
 					</form>
 				</div>
 				
@@ -335,12 +538,21 @@ foreach ($rows as $r):
     }
 ?>
 					<div class="review-card">
+						<div class="reviews-card-title"><?= htmlspecialchars($r['product_name']) ?></div>
 						<div class="review-header">
 							<div class="review-user">
 								<div class="user-avatar"><?= strtoupper(substr($r['customer_name'], 0, 1)) ?></div>
-								<div class="user-info">
+								<div class="review-user-info">
 									<h4><?= htmlspecialchars($r['customer_name']) ?></h4>
-									<p><?= htmlspecialchars($r['product_name']) ?></p>
+									<?php if (!empty($r['customer_email'])): ?>
+									<div class="review-user-email">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+											<polyline points="22,6 12,13 2,6"></polyline>
+										</svg>
+										<span><?= htmlspecialchars($r['customer_email']) ?></span>
+									</div>
+									<?php endif; ?>
 								</div>
 							</div>
 							<div class="review-rating">
@@ -413,12 +625,21 @@ foreach ($rows as $r):
     }
 ?>
 					<div class="review-card">
+						<div class="reviews-card-title"><?= htmlspecialchars($r['campground_name']) ?></div>
 						<div class="review-header">
 							<div class="review-user">
 								<div class="user-avatar"><?= strtoupper(substr($r['customer_name'], 0, 1)) ?></div>
-								<div class="user-info">
+								<div class="review-user-info">
 									<h4><?= htmlspecialchars($r['customer_name']) ?></h4>
-									<p><?= htmlspecialchars($r['campground_name']) ?></p>
+									<?php if (!empty($r['customer_email'])): ?>
+									<div class="review-user-email">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+											<polyline points="22,6 12,13 2,6"></polyline>
+										</svg>
+										<span><?= htmlspecialchars($r['customer_email']) ?></span>
+									</div>
+									<?php endif; ?>
 								</div>
 							</div>
 							<div class="review-rating">

@@ -92,16 +92,27 @@
             
             <div class="form-group">
                 <label>Gambar Event</label>
-                <div class="file-upload-area" onclick="document.getElementById('image-file-input').click()">
-                    <input type="file" id="image-file-input" name="image_file" accept="image/*" onchange="previewImage(this)" />
-                    <div class="file-upload-text">📁 Klik untuk memilih gambar dari komputer</div>
-                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Max ukuran sesuai konfigurasi server.</div>
-                </div>
                 <?php if (!empty($event['image'])): ?>
-                <div style="margin-top:0.75rem;">Saat ini: <a href="<?= htmlspecialchars($event['image']) ?>" target="_blank">Lihat gambar</a></div>
+                <div class="image-preview" style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 8px; font-weight: 600; color: var(--gray-700);">Gambar Saat Ini:</div>
+                    <img src="<?= htmlspecialchars($event['image']) ?>" alt="Current image" />
+                    <div style="margin-top: 8px;">
+                        <a href="<?= htmlspecialchars($event['image']) ?>" target="_blank" class="btn btn-secondary" style="font-size: 13px; padding: 8px 16px;">Lihat Gambar</a>
+                    </div>
+                </div>
                 <?php endif; ?>
-                <div id="image-preview" style="display:none; margin-top:1rem;">
-                    <img id="preview-img" src="" alt="Preview" style="max-width:300px;border-radius:8px;"/>
+                <div class="file-upload-area" id="event-edit-upload-area" onclick="document.getElementById('image-file-input').click()">
+                    <input type="file" id="image-file-input" name="image_file" accept="image/*" onchange="previewImage(this)" />
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); margin-bottom: 12px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <div class="file-upload-text">Klik atau seret gambar baru ke sini untuk upload</div>
+                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Ukuran maksimal sesuai konfigurasi server.</div>
+                </div>
+                <div id="image-preview">
+                    <img id="preview-img" src="" alt="Preview" />
                 </div>
             </div>
             
@@ -144,12 +155,49 @@ function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('image-preview').style.display = 'block';
+            const preview = document.getElementById('image-preview');
+            const img = document.getElementById('preview-img');
+            img.src = e.target.result;
+            preview.style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);
     }
 }
-</script>
 
+// Drag and Drop functionality
+const uploadArea = document.getElementById('event-edit-upload-area');
+const fileInput = document.getElementById('image-file-input');
+
+if (uploadArea && fileInput) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        }, false);
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            previewImage(fileInput);
+        }
+    }, false);
+}
+</script>
 

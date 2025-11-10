@@ -117,21 +117,91 @@
                             <h6 class="text-success mb-2">
                                 <i class="fas fa-share-alt me-2"></i>Sosial Media
                             </h6>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-outline-primary btn-sm">
+                            <div class="social-media-links">
+                                <a href="#" class="social-link facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="#" class="btn btn-outline-info btn-sm">
+                                <a href="#" class="social-link instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                                     <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="#" class="btn btn-outline-success btn-sm">
+                                <a href="#" class="social-link whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                                     <i class="fab fa-whatsapp"></i>
                                 </a>
-                                <a href="#" class="btn btn-outline-danger btn-sm">
+                                <a href="#" class="social-link youtube" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             </div>
                         </div>
+                        
+                        <style>
+                            .social-media-links {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 12px;
+                                align-items: center;
+                            }
+
+                            .social-link {
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 22px;
+                                text-decoration: none;
+                                width: 44px;
+                                height: 44px;
+                                border-radius: 50%;
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .social-link:hover {
+                                transform: translateY(-2px) scale(1.05);
+                                box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                            }
+
+                            .social-link.facebook {
+                                color: #1877f2;
+                            }
+
+                            .social-link.instagram {
+                                color: #e1306c;
+                            }
+
+                            .social-link.whatsapp {
+                                color: #25d366;
+                            }
+
+                            .social-link.youtube {
+                                color: #ff0000;
+                            }
+
+                            .social-link i {
+                                pointer-events: none;
+                            }
+
+                            @media (max-width: 576px) {
+                                .social-media-links {
+                                    gap: 16px;
+                                }
+
+                                .social-link {
+                                    font-size: 24px;
+                                    width: 48px;
+                                    height: 48px;
+                                }
+                            }
+                            
+                            @media (max-width: 400px) {
+                                .social-media-links {
+                                    gap: 12px;
+                                }
+
+                                .social-link {
+                                    font-size: 22px;
+                                    width: 44px;
+                                    height: 44px;
+                                }
+                            }
+                        </style>
                     </div>
                 </div>
             </div>

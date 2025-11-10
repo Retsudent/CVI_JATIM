@@ -32,19 +32,19 @@
                     <label>Nama Campground <span class="required">*</span></label>
                     <input type="text" name="name" required placeholder="Contoh: Wirotaman Premium Campground" />
                     <div class="form-help">Buat nama yang menarik dan mudah diingat</div>
-        </div>
+                </div>
                 
                 <div class="form-group">
                     <label>Deskripsi <span class="required">*</span></label>
                     <textarea name="description" required placeholder="Jelaskan keunggulan campground, pemandangan, dan pengalaman yang akan didapat pengunjung..."></textarea>
                     <div class="form-help">Deskripsikan campground secara detail untuk menarik pengunjung</div>
-        </div>
+                </div>
                 
                 <div class="form-group">
                     <label>Lokasi <span class="required">*</span></label>
                     <input type="text" name="location" required placeholder="Contoh: Desa Wirotaman, Malang" />
-        </div>
-        </div>
+                </div>
+            </div>
             
             <div class="form-section">
                 <h4>💰 Harga & Status</h4>
@@ -53,16 +53,16 @@
                     <label>Harga per Orang <span class="required">*</span></label>
                     <input type="number" step="0.01" name="price_per_person" required placeholder="25000" />
                     <div class="form-help">Harga camping per orang per hari</div>
-        </div>
+                </div>
                 
                 <div class="form-group">
                     <label>Status Campground</label>
-            <select name="status">
+                    <select name="status">
                         <option value="active">✅ Active - Campground aktif</option>
                         <option value="inactive">❌ Inactive - Campground tidak aktif</option>
                         <option value="maintenance">🔧 Maintenance - Sedang perbaikan</option>
-            </select>
-        </div>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -131,16 +131,21 @@
             
             <div class="form-group">
                 <label>Gambar Campground</label>
-                <div class="file-upload-area" onclick="document.getElementById('camp-image-file-input').click()">
+                <div class="file-upload-area" id="camp-upload-area" onclick="document.getElementById('camp-image-file-input').click()">
                     <input type="file" id="camp-image-file-input" name="image_file" accept="image/*" onchange="previewCampImage(this)" />
-                    <div class="file-upload-text">📁 Klik untuk memilih gambar dari komputer</div>
-                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Max ukuran sesuai konfigurasi server.</div>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); margin-bottom: 12px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <div class="file-upload-text">Klik atau seret gambar ke sini untuk upload</div>
+                    <div class="file-upload-hint">Format: JPG, PNG, WEBP. Ukuran maksimal sesuai konfigurasi server.</div>
                 </div>
-                <div id="camp-image-preview" style="display:none; margin-top:1rem;">
-                    <img id="camp-preview-img" src="" alt="Preview" style="max-width:300px;border-radius:8px;"/>
+                <div id="camp-image-preview">
+                    <img id="camp-preview-img" src="" alt="Preview" />
                 </div>
-                <div class="form-help">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
-                <input type="text" name="image" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top:.5rem;" />
+                <div class="form-help" style="margin-top: 12px;">Atau masukkan nama file/URL pada field gambar setelah upload (tetap didukung)</div>
+                <input type="text" name="image" class="form-control" placeholder="(opsional) nama-file.jpg atau URL gambar" style="margin-top: 8px;" />
             </div>
         </div>
         
@@ -167,6 +172,41 @@ function previewCampImage(input) {
     };
     reader.readAsDataURL(file);
 }
-</script>
 
+// Drag and Drop functionality
+const uploadArea = document.getElementById('camp-upload-area');
+const fileInput = document.getElementById('camp-image-file-input');
+
+if (uploadArea && fileInput) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        }, false);
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            previewCampImage(fileInput);
+        }
+    }, false);
+}
+</script>
 

@@ -6,25 +6,12 @@
 	<title>Events Management - CVI Jatim</title>
 	<link rel="stylesheet" href="<?= base_url('assets/css/admin-layout.css') ?>">
 	<style>
-		/* Custom styles for this page only */
-		.nav-item.active {
-			background: #f0fdf4;
-			color: #166534;
-			border-right: 3px solid #22c55e;
-		}
-		
+		/* Page-specific enhancements */
 		.stats-row {
 			display: grid;
-			grid-template-columns: repeat(1, 1fr);
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 			gap: 20px;
 			margin-bottom: 32px;
-		}
-		
-		@media (min-width: 576px) {
-			.stats-row { grid-template-columns: repeat(2, 1fr); }
-		}
-		@media (min-width: 992px) {
-			.stats-row { grid-template-columns: repeat(4, 1fr); }
 		}
 		
 		.stat-card {
@@ -67,10 +54,10 @@
 		
 		.events-container {
 			background: #ffffff;
-			border: 1px solid #e5e7eb;
-			border-radius: 8px;
+			border: 1px solid var(--gray-200);
+			border-radius: var(--radius-md);
 			padding: 24px;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			box-shadow: var(--shadow);
 		}
 		
 		.table-header {
@@ -78,102 +65,186 @@
 			justify-content: space-between;
 			align-items: center;
 			margin-bottom: 20px;
-		}
-		
-		.search-box {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 12px;
-			background: #f9fafb;
-			border: 1px solid #e5e7eb;
-			border-radius: 6px;
-			width: 300px;
-		}
-		
-		.search-box input {
-			border: none;
-			background: transparent;
-			outline: none;
-			font-size: 14px;
-			width: 100%;
-		}
-		
-		.events-table {
-			width: 100%;
-			border-collapse: collapse;
-			background: #ffffff;
-			border-radius: 8px;
-			overflow: hidden;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-		}
-		
-		.events-table th {
-			background: #f9fafb;
-			color: #374151;
-			padding: 12px 16px;
-			text-align: left;
-			font-weight: 600;
-			font-size: 12px;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			border-bottom: 1px solid #e5e7eb;
-		}
-		
-		.events-table td {
-			padding: 12px 16px;
-			border-bottom: 1px solid #f3f4f6;
-			vertical-align: middle;
-			font-size: 14px;
-			color: #374151;
-		}
-		
-		.events-table tr:hover {
-			background: #f9fafb;
-		}
-		
-		.events-table tr:last-child td {
-			border-bottom: none;
+			flex-wrap: wrap;
+			gap: 16px;
 		}
 		
 		.event-image {
 			width: 60px;
 			height: 60px;
-			border-radius: 6px;
+			border-radius: var(--radius-sm);
 			object-fit: cover;
+			box-shadow: var(--shadow-sm);
+			border: 2px solid var(--gray-200);
+			background: var(--gray-100);
+			flex-shrink: 0;
 		}
 		
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			padding: 4px 8px;
-			border-radius: 4px;
-			font-size: 12px;
-			font-weight: 500;
+		.event-image[src=""],
+		.event-image:not([src]) {
+			display: none;
 		}
 		
-		.status-active {
-			background: #dcfce7;
-			color: #166534;
-		}
-		
-		.status-inactive {
+		.event-image-placeholder {
+			width: 60px;
+			height: 60px;
+			border-radius: 8px;
 			background: #f3f4f6;
-			color: #6b7280;
+			border: 2px solid #e5e7eb;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #9ca3af;
+			font-size: 24px;
+			flex-shrink: 0;
 		}
 		
 		.action-buttons {
 			display: flex;
 			gap: 8px;
+			flex-wrap: wrap;
 		}
 		
-		.btn-sm {
-			padding: 6px 10px;
-			font-size: 12px;
-			border-radius: 4px;
+		/* Image Lightbox Modal */
+		.image-modal {
+			display: none;
+			position: fixed;
+			z-index: 10000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.9);
+			backdrop-filter: blur(5px);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			overflow: auto;
 		}
-	
+		
+		.image-modal.active {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 1;
+		}
+		
+		.image-modal-content {
+			position: relative;
+			max-width: 90%;
+			max-height: 90vh;
+			margin: auto;
+			animation: zoomIn 0.3s ease;
+		}
+		
+		@keyframes zoomIn {
+			from {
+				transform: scale(0.8);
+				opacity: 0;
+			}
+			to {
+				transform: scale(1);
+				opacity: 1;
+			}
+		}
+		
+		.image-modal-img {
+			width: 100%;
+			height: auto;
+			max-height: 90vh;
+			object-fit: contain;
+			border-radius: 8px;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+		}
+		
+		.image-modal-close {
+			position: absolute;
+			top: -50px;
+			right: 0;
+			color: #ffffff;
+			font-size: 30px;
+			font-weight: bold;
+			cursor: pointer;
+			background: rgba(255, 255, 255, 0.1);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s ease;
+			line-height: 1;
+			z-index: 10001;
+		}
+		
+		.image-modal-close:hover {
+			background: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.5);
+			transform: rotate(90deg);
+		}
+		
+		.image-modal-info {
+			position: absolute;
+			bottom: -60px;
+			left: 0;
+			right: 0;
+			text-align: center;
+			color: #ffffff;
+			padding: 0 20px;
+		}
+		
+		.image-modal-title {
+			font-size: 18px;
+			font-weight: 600;
+			margin-bottom: 6px;
+			word-wrap: break-word;
+		}
+		
+		.image-modal-description {
+			font-size: 14px;
+			color: rgba(255, 255, 255, 0.8);
+			word-wrap: break-word;
+			max-height: 60px;
+			overflow-y: auto;
+		}
+		
+		@media (max-width: 768px) {
+			.image-modal-content {
+				max-width: 95%;
+				padding: 10px;
+			}
+			
+			.image-modal-close {
+				top: -45px;
+				width: 35px;
+				height: 35px;
+				font-size: 24px;
+			}
+			
+			.image-modal-info {
+				bottom: -55px;
+			}
+			
+			.image-modal-title {
+				font-size: 16px;
+			}
+			
+			.image-modal-description {
+			font-size: 12px;
+			}
+		}
+		
+		.empty-state {
+			padding: 60px 20px;
+			text-align: center;
+		}
+		
+		.empty-state svg {
+			width: 64px;
+			height: 64px;
+			margin-bottom: 16px;
+			color: var(--gray-300);
+		}
 	</style>
 </head>
 <body>
@@ -219,7 +290,7 @@
 							</svg>
 						</div>
 					</div>
-					<div class="stat-value">12</div>
+					<div class="stat-value"><?= isset($totalEvents) ? (int)$totalEvents : 0 ?></div>
 					<div class="stat-label">Total Events</div>
 				</div>
 				<div class="stat-card">
@@ -230,7 +301,7 @@
 							</svg>
 						</div>
 					</div>
-					<div class="stat-value">8</div>
+					<div class="stat-value"><?= isset($activeEvents) ? (int)$activeEvents : 0 ?></div>
 					<div class="stat-label">Active Events</div>
 				</div>
 				<div class="stat-card">
@@ -242,7 +313,7 @@
 							</svg>
 						</div>
 					</div>
-					<div class="stat-value">4</div>
+					<div class="stat-value"><?= isset($upcomingEvents) ? (int)$upcomingEvents : 0 ?></div>
 					<div class="stat-label">Upcoming</div>
 				</div>
 			</div>
@@ -261,14 +332,13 @@
 				</div>
 				
 				<div class="table-responsive">
-				<table class="events-table">
+				<table class="table">
 					<thead>
 						<tr>
 							<th>Event</th>
 							<th>Date</th>
 							<th>Location</th>
 							<th>Status</th>
-							<th>Participants</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -279,15 +349,51 @@ try {
     $rows = $pdo->query('SELECT id, title, description, location, start_date, end_date, image, status FROM events ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) { $rows = []; }
 if (!$rows) {
-    echo '<tr><td colspan="6">Tidak ada data event.</td></tr>';
+    echo '<tr><td colspan="5">Tidak ada data event.</td></tr>';
 }
 foreach ($rows as $r):
-    $img = $r['image'] ? '/assets/images/' . htmlspecialchars($r['image']) : '/assets/images/placeholder.jpg';
+    // Handle both full URL and filename-only formats
+    $imageData = $r['image'] ?? '';
+    $hasImage = false;
+    $img = '';
+    
+    if (!empty($imageData)) {
+        if (strpos($imageData, 'http://') === 0 || strpos($imageData, 'https://') === 0) {
+            // Full URL (http/https)
+            $img = htmlspecialchars($imageData);
+            $hasImage = true;
+        } elseif (strpos($imageData, base_url()) === 0) {
+            // URL with base_url prefix
+            $img = htmlspecialchars($imageData);
+            $hasImage = true;
+        } elseif (strpos($imageData, 'assets/images/') !== false) {
+            // Path contains assets/images
+            $img = base_url($imageData);
+            $hasImage = true;
+        } elseif (strpos($imageData, '/') === 0) {
+            // Absolute path starting with /
+            $img = base_url(ltrim($imageData, '/'));
+            $hasImage = true;
+        } elseif (strpos($imageData, '/') !== false) {
+            // Relative path with slashes
+            $img = base_url($imageData);
+            $hasImage = true;
+        } else {
+            // Just filename, assume it's in events folder
+            $img = base_url('assets/images/events/' . htmlspecialchars($imageData));
+            $hasImage = true;
+        }
+    }
 ?>
 						<tr>
 							<td>
 								<div style="display: flex; align-items: center; gap: 12px;">
-									<img src="<?= $img ?>" alt="Event" class="event-image">
+									<?php if ($hasImage): ?>
+									<img src="<?= $img ?>" alt="Event" class="event-image" 
+										loading="lazy"
+										decoding="async">
+									<?php endif; ?>
+									<div class="event-image-placeholder" style="display: <?= $hasImage ? 'none' : 'flex' ?>; width: 60px; height: 60px; border-radius: 8px; background: #f3f4f6; border: 2px solid #e5e7eb; align-items: center; justify-content: center; color: #9ca3af; font-size: 24px;">📅</div>
 									<div>
 										<div style="font-weight: 600; color: #111827;"><?= htmlspecialchars($r['title']) ?></div>
 										<div style="font-size: 12px; color: #6b7280;"><?= htmlspecialchars($r['description']) ?></div>
@@ -297,10 +403,13 @@ foreach ($rows as $r):
 							<td><?= htmlspecialchars($r['start_date']) ?></td>
 							<td><?= htmlspecialchars($r['location']) ?></td>
 							<td><span class="status-badge <?= $r['status']==='active'?'status-active':'status-inactive' ?>"><?= htmlspecialchars($r['status']) ?></span></td>
-							<td>0</td>
 							<td>
 								<div class="action-buttons">
-									<a href="/event/detail/<?= (int)$r['id'] ?>" class="btn btn-secondary btn-sm" target="_blank">View</a>
+									<?php if ($hasImage): ?>
+									<button type="button" class="btn btn-secondary btn-sm" onclick="openImageModal('<?= $img ?>', '<?= htmlspecialchars($r['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($r['description'], ENT_QUOTES) ?>')">View</button>
+									<?php else: ?>
+									<button type="button" class="btn btn-secondary btn-sm" onclick="alert('Tidak ada gambar untuk event ini')" title="Tidak ada gambar">View</button>
+									<?php endif; ?>
 									<a href="/admin/events/edit/<?= (int)$r['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
 									<form method="post" action="/admin/events/delete/<?= (int)$r['id'] ?>" onsubmit="return confirm('Hapus event ini?');" style="display:inline">
 										<?= csrf_field() ?>
@@ -319,11 +428,43 @@ foreach ($rows as $r):
 	</div>
 	
 	<script>
+		// Prevent images from continuously loading on error
+		document.addEventListener('DOMContentLoaded', function() {
+			// Handle all event images
+			const eventImages = document.querySelectorAll('.event-image');
+			eventImages.forEach(function(img) {
+				// Set timeout to stop loading if image takes too long
+				let loadTimeout = setTimeout(function() {
+					if (!img.complete) {
+						img.onerror();
+					}
+				}, 5000); // 5 second timeout
+				
+				img.onload = function() {
+					clearTimeout(loadTimeout);
+				};
+				
+				img.onerror = function() {
+					clearTimeout(loadTimeout);
+					// Prevent infinite loop
+					if (this.dataset.errorHandled !== 'true') {
+						this.dataset.errorHandled = 'true';
+						this.onerror = null;
+						this.style.display = 'none';
+						// Show placeholder
+						const placeholder = this.nextElementSibling;
+						if (placeholder && placeholder.classList.contains('event-image-placeholder')) {
+							placeholder.style.display = 'flex';
+						}
+					}
+				};
+			});
+		});
 		
 		// Search functionality
 		document.querySelector('.search-box input').addEventListener('input', function(e) {
 			const searchTerm = e.target.value.toLowerCase();
-			const rows = document.querySelectorAll('.events-table tbody tr');
+			const rows = document.querySelectorAll('.table tbody tr');
 			
 			rows.forEach(row => {
 				const text = row.textContent.toLowerCase();
@@ -332,511 +473,94 @@ foreach ($rows as $r):
 		});
 	
 	</script>
-</body>
-</html>
-			align-items: center;
-			gap: 12px;
-			padding: 12px 20px;
-			color: var(--gray-800);
-			text-decoration: none;
-			transition: all 0.3s ease;
-			position: relative;
-			font-weight: 500;
-		}
-		
-		.nav-item:hover {
-			background: var(--mint);
-			color: var(--dark-green);
-			transform: translateX(5px);
-		}
-		
-		.nav-item.active {
-			background: linear-gradient(135deg, var(--primary-green), var(--forest));
-			color: white;
-			box-shadow: var(--shadow-md);
-		}
-		
-		.nav-item.active::before {
-			content: '';
-			position: absolute;
-			left: 0;
-			top: 0;
-			bottom: 0;
-			width: 4px;
-			background: var(--gold);
-		}
-		
-		.nav-icon {
-			width: 20px;
-			height: 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 16px;
-		}
-		
-		/* Main Content */
-		.content {
-			padding: 30px;
-			overflow-y: auto;
-			background: rgba(255, 255, 255, 0.1);
-		}
-		
-		.page-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 30px;
-		}
-		
-		.page-title {
-			font-size: 28px;
-			font-weight: 700;
-			color: var(--dark-green);
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
-		
-		.page-icon {
-			width: 50px;
-			height: 50px;
-			background: linear-gradient(135deg, var(--primary-green), var(--forest));
-			border-radius: 15px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 24px;
-			color: white;
-			box-shadow: var(--shadow-md);
-		}
-		
-		.add-btn {
-			background: linear-gradient(135deg, var(--primary-green), var(--forest));
-			color: white;
-			text-decoration: none;
-			padding: 12px 24px;
-			border-radius: 12px;
-			font-weight: 600;
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			transition: all 0.3s ease;
-			box-shadow: var(--shadow-md);
-		}
-		
-		.add-btn:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-lg);
-		}
-		
-		/* Stats Cards */
-		.stats-row {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-			gap: 20px;
-			margin-bottom: 30px;
-		}
-		
-		.stat-card {
-			background: rgba(255, 255, 255, 0.95);
-			backdrop-filter: blur(20px);
-			border-radius: 16px;
-			padding: 20px;
-			box-shadow: var(--shadow-lg);
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
-		
-		.stat-icon {
-			width: 50px;
-			height: 50px;
-			background: linear-gradient(135deg, var(--mint), var(--sage));
-			border-radius: 12px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 20px;
-			color: var(--dark-green);
-		}
-		
-		.stat-info h3 {
-			font-size: 24px;
-			font-weight: 700;
-			color: var(--dark-green);
-			margin-bottom: 5px;
-		}
-		
-		.stat-info p {
-			font-size: 14px;
-			color: var(--gray-600);
-		}
-		
-		/* Events Table */
-		.events-container {
-			background: rgba(255, 255, 255, 0.95);
-			backdrop-filter: blur(20px);
-			border-radius: 20px;
-			padding: 30px;
-			box-shadow: var(--shadow-xl);
-		}
-		
-		.table-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 25px;
-		}
-		
-		.table-title {
-			font-size: 20px;
-			font-weight: 700;
-			color: var(--dark-green);
-		}
-		
-		.search-box {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			background: var(--gray-50);
-			padding: 10px 15px;
-			border-radius: 10px;
-			border: 2px solid var(--gray-200);
-		}
-		
-		.search-box input {
-			border: none;
-			background: transparent;
-			outline: none;
-			font-size: 14px;
-			width: 200px;
-		}
-		
-		.events-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 20px;
-		}
-		
-		.events-table th {
-			background: var(--mint);
-			color: var(--dark-green);
-			padding: 15px;
-			text-align: left;
-			font-weight: 600;
-			border-radius: 10px 10px 0 0;
-		}
-		
-		.events-table td {
-			padding: 15px;
-			border-bottom: 1px solid var(--gray-200);
-		}
-		
-		.events-table tr:hover {
-			background: var(--gray-50);
-		}
-		
-		.event-image {
-			width: 60px;
-			height: 60px;
-			border-radius: 10px;
-			object-fit: cover;
-			background: var(--gray-200);
-		}
-		
-		.event-title {
-			font-weight: 600;
-			color: var(--dark-green);
-			margin-bottom: 5px;
-		}
-		
-		.event-date {
-			font-size: 12px;
-			color: var(--gray-600);
-		}
-		
-		.status-badge {
-			padding: 6px 12px;
-			border-radius: 20px;
-			font-size: 12px;
-			font-weight: 600;
-			text-transform: uppercase;
-		}
-		
-		.status-active {
-			background: var(--mint);
-			color: var(--dark-green);
-		}
-		
-		.status-inactive {
-			background: #ffebee;
-			color: #c62828;
-		}
-		
-		.action-buttons {
-			display: flex;
-			gap: 8px;
-		}
-		
-		.btn {
-			padding: 8px 12px;
-			border: none;
-			border-radius: 8px;
-			font-size: 12px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			text-decoration: none;
-			display: inline-flex;
-			align-items: center;
-			gap: 5px;
-		}
-		
-		.btn-edit {
-			background: var(--gold);
-			color: white;
-		}
-		
-		.btn-delete {
-			background: #f44336;
-			color: white;
-		}
-		
-		.btn-view {
-			background: var(--primary-green);
-			color: white;
-		}
-		
-		.btn:hover {
-			transform: translateY(-1px);
-			box-shadow: var(--shadow-md);
-		}
-		
-		/* Responsive */
-		@media (max-width: 768px) {
-			.layout {
-				grid-template-columns: 1fr;
-				grid-template-rows: 70px 1fr;
-			}
-			
-			.sidebar {
-				display: none;
-			}
-			
-			.content {
-				padding: 20px;
-			}
-			
-			.page-header {
-				flex-direction: column;
-				gap: 15px;
-				align-items: flex-start;
-			}
-			
-			.stats-row {
-				grid-template-columns: 1fr;
-			}
-			
-			.events-table {
-				font-size: 14px;
-			}
-			
-			.events-table th,
-			.events-table td {
-				padding: 10px;
-			}
-		}
-	</style>
-</head>
-<body>
-	<div class="layout">
-		<!-- Topbar -->
-		<div class="topbar">
-			<div class="brand">
-				<div class="logo-icon">🌿</div>
-				<span>Admin CVI Jatim</span>
-			</div>
-			<div class="user-info">
-				<div class="user-avatar">👤</div>
-				<span><?= htmlspecialchars($_SESSION['username'] ?? 'Admin') ?></span>
-				<a class="logout-btn" href="http://localhost:8080/logout">Keluar</a>
-			</div>
-		</div>
-		
-		<!-- Sidebar -->
-		<aside class="sidebar">
-			<div class="nav-section">
-				<div class="nav-title">Dashboard</div>
-				<a href="http://localhost:8080/admin" class="nav-item">
-					<div class="nav-icon">📊</div>
-					<span>Overview</span>
-				</a>
-			</div>
-			
-			<div class="nav-section">
-				<div class="nav-title">Konten</div>
-				<a href="http://localhost:8080/admin/events" class="nav-item active">
-					<div class="nav-icon">🎉</div>
-					<span>Events</span>
-				</a>
-				<a href="http://localhost:8080/admin/merchandise" class="nav-item">
-					<div class="nav-icon">🛍️</div>
-					<span>Merchandise</span>
-				</a>
-				<a href="http://localhost:8080/admin/campground" class="nav-item">
-					<div class="nav-icon">🏕️</div>
-					<span>Campground</span>
-				</a>
-				<a href="http://localhost:8080/admin/gallery" class="nav-item">
-					<div class="nav-icon">📸</div>
-					<span>Gallery</span>
-				</a>
-			</div>
-			
-			<div class="nav-section">
-				<div class="nav-title">Website</div>
-				<a href="http://localhost:8080/" class="nav-item">
-					<div class="nav-icon">🌐</div>
-					<span>Lihat Website</span>
-				</a>
-			</div>
-		</aside>
-		
-		<!-- Main Content -->
-		<main class="content">
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="page-title">
-					<div class="page-icon">🎉</div>
-					<span>Events Management</span>
-				</div>
-				<a href="http://localhost:8080/admin/events/create" class="add-btn">
-					<span>➕</span>
-					<span>Tambah Event Baru</span>
-				</a>
-			</div>
-			
-			<!-- Stats Row -->
-			<div class="stats-row">
-				<div class="stat-card">
-					<div class="stat-icon">📅</div>
-					<div class="stat-info">
-						<h3>12</h3>
-						<p>Total Events</p>
-					</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-icon">✅</div>
-					<div class="stat-info">
-						<h3>8</h3>
-						<p>Event Aktif</p>
-					</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-icon">⏰</div>
-					<div class="stat-info">
-						<h3>4</h3>
-						<p>Event Mendatang</p>
-					</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-icon">👥</div>
-					<div class="stat-info">
-						<h3>156</h3>
-						<p>Total Peserta</p>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Events Table -->
-			<div class="events-container">
-				<div class="table-header">
-					<h3 class="table-title">Daftar Events</h3>
-					<div class="search-box">
-						<span>🔍</span>
-						<input type="text" placeholder="Cari event..." id="searchInput">
-					</div>
-				</div>
-				
-				<table class="events-table">
-					<thead>
-						<tr>
-							<th>Gambar</th>
-							<th>Event</th>
-							<th>Tanggal Mulai</th>
-							<th>Tanggal Selesai</th>
-							<th>Lokasi</th>
-							<th>Status</th>
-							<th>Aksi</th>
-						</tr>
-					</thead>
-					<tbody>
-<?php
-try {
-    $pdo = new PDO('pgsql:host=localhost;port=5432;dbname=cvi_wirotaman', 'postgres', 'postgres', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    $rows = $pdo->query('SELECT id, title, description, location, start_date, end_date, image, status FROM events ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
-} catch (Throwable $e) { $rows = []; }
-if (!$rows) {
-    echo '<tr><td colspan="7">Tidak ada data event.</td></tr>';
-}
-foreach ($rows as $r):
-    $img = $r['image'] ? '/assets/images/' . htmlspecialchars($r['image']) : '/assets/images/placeholder.jpg';
-?>
-						<tr>
-							<td><img src="<?= $img ?>" alt="Event" class="event-image"></td>
-							<td>
-								<div class="event-title"><?= htmlspecialchars($r['title']) ?></div>
-								<div class="event-date"><?= htmlspecialchars($r['description']) ?></div>
-							</td>
-							<td><?= htmlspecialchars($r['start_date']) ?></td>
-							<td><?= htmlspecialchars($r['end_date']) ?></td>
-							<td><?= htmlspecialchars($r['location']) ?></td>
-							<td><span class="status-badge <?= $r['status']==='active'?'status-active':'status-inactive' ?>"><?= htmlspecialchars($r['status']) ?></span></td>
-							<td>
-                                <div class="action-buttons">
-                                    <a class="btn btn-view" href="/event/detail/<?= (int)$r['id'] ?>" target="_blank">👁️</a>
-                                    <a class="btn btn-edit" href="/admin/events/edit/<?= (int)$r['id'] ?>">✏️</a>
-									<form method="post" action="/admin/events/delete/<?= (int)$r['id'] ?>" onsubmit="return confirm('Hapus event ini?');" style="display:inline">
-										<?= csrf_field() ?>
-										<button type="submit" class="btn btn-delete">🗑️</button>
-									</form>
-                                </div>
-							</td>
-						</tr>
-<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-		</main>
-	</div>
 	
+	<!-- Image Modal -->
+	<div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+		<div class="image-modal-content" onclick="event.stopPropagation()">
+			<span class="image-modal-close" onclick="closeImageModal(event)">&times;</span>
+			<img id="modalImage" class="image-modal-img" src="" alt="Preview">
+			<div class="image-modal-info">
+				<div id="modalTitle" class="image-modal-title"></div>
+				<div id="modalDescription" class="image-modal-description"></div>
+					</div>
+				</div>
+			</div>
+			
 	<script>
-		function openAddModal(){ window.location.href='/admin/events/create'; }
-		
-		function viewEvent(id) {
-			alert('Melihat detail event ID: ' + id);
+		function openImageModal(imageSrc, title, description) {
+			const modal = document.getElementById('imageModal');
+			const modalImg = document.getElementById('modalImage');
+			const modalTitle = document.getElementById('modalTitle');
+			const modalDescription = document.getElementById('modalDescription');
+			
+			if (!modal || !modalImg) return;
+			
+			// Prevent infinite loop by setting onerror to null after first error
+			let errorHandled = false;
+			
+			// Clear any previous error messages
+			const existingError = modalImg.parentNode.querySelector('.image-error-message');
+			if (existingError) {
+				existingError.remove();
+			}
+			
+			modalImg.onerror = function() {
+				if (!errorHandled) {
+					errorHandled = true;
+					this.onerror = null; // Prevent infinite loop
+					this.style.display = 'none';
+					// Show error message instead of trying to load placeholder
+					const errorDiv = document.createElement('div');
+					errorDiv.className = 'image-error-message';
+					errorDiv.style.cssText = 'color: #fff; text-align: center; padding: 40px; font-size: 16px; background: rgba(255,255,255,0.1); border-radius: 8px;';
+					errorDiv.textContent = 'Gambar tidak dapat dimuat';
+					this.parentNode.insertBefore(errorDiv, this);
+				}
+			};
+			modalImg.onload = function() {
+				this.style.display = 'block';
+				errorHandled = false;
+				// Remove error message if image loads successfully
+				const existingError = this.parentNode.querySelector('.image-error-message');
+				if (existingError) {
+					existingError.remove();
+				}
+			};
+			modalImg.src = imageSrc;
+			modalImg.style.display = 'block';
+			modalTitle.textContent = title || '';
+			modalDescription.textContent = description || '';
+			
+			modal.classList.add('active');
+			document.body.style.overflow = 'hidden';
 		}
 		
-		function editEvent(id) {
-			alert('Mengedit event ID: ' + id);
-		}
-		
-		function deleteEvent(id) {
-			if (confirm('Apakah Anda yakin ingin menghapus event ini?')) {
-				alert('Event ID: ' + id + ' berhasil dihapus!');
+		function closeImageModal(event) {
+			if (event) {
+				event.stopPropagation();
+			}
+			const modal = document.getElementById('imageModal');
+			if (modal) {
+				modal.classList.remove('active');
+				document.body.style.overflow = '';
 			}
 		}
 		
-		// Search functionality
-		document.getElementById('searchInput').addEventListener('input', function(e) {
-			const searchTerm = e.target.value.toLowerCase();
-			const rows = document.querySelectorAll('.events-table tbody tr');
-			
-			rows.forEach(row => {
-				const text = row.textContent.toLowerCase();
-				row.style.display = text.includes(searchTerm) ? '' : 'none';
-			});
+		// Close modal on ESC key
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				closeImageModal();
+			}
+		});
+		
+		// Close modal when clicking outside the image
+		document.addEventListener('click', function(event) {
+			const modal = document.getElementById('imageModal');
+			if (modal && modal.classList.contains('active')) {
+				if (event.target === modal) {
+					closeImageModal();
+				}
+			}
 		});
 	</script>
 </body>

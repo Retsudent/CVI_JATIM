@@ -24,8 +24,23 @@ class AdminCrud extends BaseController
     {
         $eventsModel = new EventModel();
         $rows = $eventsModel->orderBy('start_date', 'DESC')->findAll();
+        // Compute stat card totals
+        $totalEvents = is_array($rows) ? count($rows) : 0;
+
+    // Active events: count events that have status 'upcoming' or 'ongoing'.
+    // The public events listing assigns badges from the `status` field (upcoming/ongoing/etc),
+    // so counting by status matches the number of cards labeled Upcoming/Ongoing on the public page.
+    $activeEvents = $eventsModel->whereIn('status', ['upcoming', 'ongoing'])->countAllResults();
+
+        // Upcoming: explicitly count events in DB with status 'upcoming' and start_date >= today.
+        $today = date('Y-m-d');
+        $upcomingEvents = $eventsModel->where('status', 'upcoming')->where('start_date >=', $today)->countAllResults();
+
         return $this->response->setBody(view('admin/events/index', [
             'events' => $rows,
+            'totalEvents' => (int)$totalEvents,
+            'activeEvents' => (int)$activeEvents,
+            'upcomingEvents' => (int)$upcomingEvents,
             'session' => $this->session
         ]));
     }

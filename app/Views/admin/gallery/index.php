@@ -72,6 +72,21 @@
 			justify-content: space-between;
 			align-items: center;
 			margin-bottom: 20px;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+		
+		.table-header h3 {
+			margin: 0;
+			flex: 1;
+			min-width: 150px;
+		}
+		
+		.table-header > div {
+			display: flex;
+			gap: 16px;
+			align-items: center;
+			flex-wrap: wrap;
 		}
 		
 		.view-toggle {
@@ -87,6 +102,10 @@
 			font-size: 14px;
 			cursor: pointer;
 			transition: all 0.2s ease;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			white-space: nowrap;
 		}
 		
 		.toggle-btn.active {
@@ -103,7 +122,9 @@
 			background: #f9fafb;
 			border: 1px solid #e5e7eb;
 			border-radius: 6px;
-			width: 300px;
+			width: 100%;
+			max-width: 300px;
+			flex-shrink: 0;
 		}
 		
 		.search-box input {
@@ -116,28 +137,45 @@
 		
 		.photos-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 			gap: 20px;
 		}
 		
 		.photo-card {
 			background: #ffffff;
-			border: 1px solid #e5e7eb;
-			border-radius: 8px;
+			border: 1px solid var(--gray-200);
+			border-radius: var(--radius-md);
 			overflow: hidden;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-			transition: all 0.2s ease;
+			box-shadow: var(--shadow);
+			transition: all 0.3s ease;
 			position: relative;
+			display: flex;
+			flex-direction: column;
 		}
 		
 		.photo-card:hover {
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			box-shadow: var(--shadow-lg);
+			transform: translateY(-4px);
+		}
+		
+		.photo-image-container {
+			position: relative;
+			width: 100%;
+			height: 200px;
+			overflow: hidden;
+			background: var(--gray-100);
 		}
 		
 		.photo-image {
 			width: 100%;
-			height: 200px;
+			height: 100%;
 			object-fit: cover;
+			transition: all 0.3s ease;
+		}
+		
+		.photo-card:hover .photo-image {
+			transform: scale(1.05);
+			filter: brightness(0.6);
 		}
 		
 		.photo-overlay {
@@ -146,44 +184,160 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
-			background: rgba(0, 0, 0, 0.7);
+			background: rgba(0, 0, 0, 0.5);
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			gap: 8px;
 			opacity: 0;
-			transition: opacity 0.2s ease;
+			transition: opacity 0.3s ease;
+			pointer-events: none;
 		}
 		
 		.photo-card:hover .photo-overlay {
 			opacity: 1;
+			pointer-events: all;
 		}
 		
 		.overlay-btn {
-			padding: 8px 12px;
-			background: rgba(255, 255, 255, 0.9);
-			border: none;
-			border-radius: 4px;
-			font-size: 12px;
+			padding: 10px 16px;
+			background: rgba(255, 255, 255, 0.95);
+			border: 2px solid rgba(255, 255, 255, 0.8);
+			border-radius: var(--radius-sm);
+			font-size: 13px;
+			font-weight: 600;
 			cursor: pointer;
 			text-decoration: none;
-			color: #111827;
+			color: var(--gray-900);
+			transition: all 0.2s ease;
+			box-shadow: var(--shadow-md);
+			pointer-events: all;
+		}
+		
+		.overlay-btn:hover {
+			background: #ffffff;
+			border-color: #ffffff;
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg);
+		}
+		
+		.overlay-btn:active {
+			transform: translateY(0);
 		}
 		
 		.photo-info {
-			padding: 12px;
+			padding: 16px;
+			background: #ffffff;
+			border-top: 1px solid var(--gray-200);
 		}
 		
 		.photo-title {
-			font-size: 14px;
+			font-size: 15px;
 			font-weight: 600;
-			color: #111827;
-			margin-bottom: 4px;
+			color: var(--gray-900);
+			margin-bottom: 6px;
 		}
 		
 		.photo-date {
-			font-size: 12px;
-			color: #6b7280;
+			font-size: 13px;
+			color: var(--gray-500);
+		}
+		
+		/* Lightbox Modal */
+		.lightbox {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.95);
+			z-index: 10000;
+			justify-content: center;
+			align-items: center;
+			animation: fadeIn 0.3s ease;
+		}
+		
+		.lightbox.active {
+			display: flex;
+		}
+		
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		
+		.lightbox-content {
+			position: relative;
+			max-width: 90vw;
+			max-height: 90vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		.lightbox-image {
+			max-width: 100%;
+			max-height: 90vh;
+			object-fit: contain;
+			border-radius: var(--radius-md);
+			box-shadow: var(--shadow-xl);
+			animation: zoomIn 0.3s ease;
+		}
+		
+		@keyframes zoomIn {
+			from { transform: scale(0.8); opacity: 0; }
+			to { transform: scale(1); opacity: 1; }
+		}
+		
+		.lightbox-close {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			width: 40px;
+			height: 40px;
+			background: rgba(255, 255, 255, 0.9);
+			border: none;
+			border-radius: 50%;
+			font-size: 24px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--gray-900);
+			transition: all 0.2s ease;
+			box-shadow: var(--shadow-lg);
+			z-index: 10001;
+		}
+		
+		.lightbox-close:hover {
+			background: #ffffff;
+			transform: rotate(90deg);
+		}
+		
+		.lightbox-info {
+			position: absolute;
+			bottom: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: rgba(255, 255, 255, 0.95);
+			padding: 16px 24px;
+			border-radius: var(--radius-md);
+			box-shadow: var(--shadow-lg);
+			text-align: center;
+			max-width: 80%;
+		}
+		
+		.lightbox-title {
+			font-size: 18px;
+			font-weight: 600;
+			color: var(--gray-900);
+			margin-bottom: 4px;
+		}
+		
+		.lightbox-date {
+			font-size: 14px;
+			color: var(--gray-500);
 		}
 		
 		.btn-sm {
@@ -206,6 +360,112 @@
 			background: #ef4444;
 			color: white;
 			border: 1px solid #ef4444;
+		}
+		
+		/* Responsive Styles */
+		@media (max-width: 768px) {
+			.stats-row {
+				grid-template-columns: 1fr;
+				gap: 16px;
+			}
+			
+			.gallery-container {
+				padding: 16px;
+			}
+			
+			.table-header {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			
+			.table-header h3 {
+				min-width: auto;
+			}
+			
+			.table-header > div {
+				width: 100%;
+				flex-direction: column;
+				align-items: stretch;
+			}
+			
+			.view-toggle {
+				width: 100%;
+				justify-content: stretch;
+			}
+			
+			.toggle-btn {
+				flex: 1;
+				justify-content: center;
+			}
+			
+			.search-box {
+				max-width: 100%;
+				width: 100%;
+			}
+			
+			.photos-grid {
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				gap: 16px;
+			}
+			
+			.photo-image-container {
+				height: 150px;
+			}
+			
+			.photo-info {
+				padding: 12px;
+			}
+			
+			.photo-title {
+				font-size: 14px;
+			}
+			
+			.photo-date {
+				font-size: 12px;
+			}
+			
+			.overlay-btn {
+				padding: 8px 12px;
+				font-size: 12px;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.page-header {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 12px;
+			}
+			
+			.add-btn {
+				width: 100%;
+				justify-content: center;
+			}
+			
+			.photos-grid {
+				grid-template-columns: 1fr;
+				gap: 12px;
+			}
+			
+			.photo-image-container {
+				height: 200px;
+			}
+			
+			.photo-overlay {
+				gap: 6px;
+				flex-wrap: wrap;
+			}
+			
+			.overlay-btn {
+				padding: 6px 10px;
+				font-size: 11px;
+			}
+		}
+		
+		@media (min-width: 769px) and (max-width: 1024px) {
+			.photos-grid {
+				grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+			}
 		}
 	
 	</style>
@@ -271,7 +531,7 @@
 			<div class="gallery-container">
 				<div class="table-header">
 					<h3>Photo List</h3>
-					<div style="display: flex; gap: 16px; align-items: center;">
+					<div>
 						<div class="view-toggle">
 							<button class="toggle-btn active" data-view="grid">
 								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -317,14 +577,16 @@ foreach ($rows as $r):
     $img = base_url('assets/images/' . htmlspecialchars($r['image']));
 ?>
 					<div class="photo-card">
-						<img src="<?= $img ?>" alt="Photo" class="photo-image">
-						<div class="photo-overlay">
-							<a href="/admin/gallery/view/<?= (int)$r['id'] ?>" class="overlay-btn">View</a>
-							<a href="/admin/gallery/edit/<?= (int)$r['id'] ?>" class="overlay-btn">Edit</a>
-							<form method="post" action="/admin/gallery/delete/<?= (int)$r['id'] ?>" onsubmit="return confirm('Hapus foto ini?');" style="display:inline">
-								<?= csrf_field() ?>
-								<button type="submit" class="overlay-btn">Delete</button>
-							</form>
+						<div class="photo-image-container">
+							<img src="<?= $img ?>" alt="<?= htmlspecialchars($r['title']) ?>" class="photo-image" data-lightbox-src="<?= $img ?>" data-lightbox-title="<?= htmlspecialchars($r['title']) ?>" data-lightbox-date="<?= date('d M Y', strtotime($r['created_at'])) ?>">
+							<div class="photo-overlay">
+								<button type="button" class="overlay-btn" onclick="openLightbox('<?= $img ?>', '<?= htmlspecialchars(addslashes($r['title'])) ?>', '<?= date('d M Y', strtotime($r['created_at'])) ?>')">View</button>
+								<a href="/admin/gallery/edit/<?= (int)$r['id'] ?>" class="overlay-btn">Edit</a>
+								<form method="post" action="/admin/gallery/delete/<?= (int)$r['id'] ?>" onsubmit="return confirm('Hapus foto ini?');" style="display:inline">
+									<?= csrf_field() ?>
+									<button type="submit" class="overlay-btn">Delete</button>
+								</form>
+							</div>
 						</div>
 						<div class="photo-info">
 							<div class="photo-title"><?= htmlspecialchars($r['title']) ?></div>
@@ -338,6 +600,18 @@ foreach ($rows as $r):
 		</main>
 	</div>
 	
+	<!-- Lightbox Modal -->
+	<div class="lightbox" id="lightbox">
+		<button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+		<div class="lightbox-content">
+			<img src="" alt="" class="lightbox-image" id="lightboxImage">
+			<div class="lightbox-info">
+				<div class="lightbox-title" id="lightboxTitle"></div>
+				<div class="lightbox-date" id="lightboxDate"></div>
+			</div>
+		</div>
+	</div>
+	
 	<script>
 		
 		// Search functionality
@@ -347,25 +621,88 @@ foreach ($rows as $r):
 			
 			cards.forEach(card => {
 				const text = card.textContent.toLowerCase();
-				card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+				card.style.display = text.includes(searchTerm) ? 'flex' : 'none';
 			});
 		});
+		
+		// Function to update grid layout based on view and screen size
+		function updateGridLayout() {
+			const grid = document.querySelector('.photos-grid');
+			const activeView = document.querySelector('.toggle-btn.active')?.dataset.view;
+			
+			if (!grid) return;
+			
+			if (activeView === 'list') {
+				grid.style.gridTemplateColumns = '1fr';
+			} else {
+				// Responsive grid based on screen size
+				if (window.innerWidth <= 480) {
+					grid.style.gridTemplateColumns = '1fr';
+				} else if (window.innerWidth <= 768) {
+					grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+				} else if (window.innerWidth <= 1024) {
+					grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(180px, 1fr))';
+				} else {
+					grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+				}
+			}
+		}
 		
 		// View toggle functionality
 		document.querySelectorAll('.toggle-btn').forEach(btn => {
 			btn.addEventListener('click', function() {
 				document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
 				this.classList.add('active');
-				
-				const view = this.dataset.view;
-				const grid = document.querySelector('.photos-grid');
-				
-				if (view === 'list') {
-					grid.style.gridTemplateColumns = '1fr';
-				} else {
-					grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(250px, 1fr))';
-				}
+				updateGridLayout();
 			});
+		});
+		
+		// Update grid on window resize
+		let resizeTimeout;
+		window.addEventListener('resize', function() {
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(function() {
+				updateGridLayout();
+			}, 250);
+		});
+		
+		// Initialize grid layout on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			updateGridLayout();
+		});
+		
+		// Lightbox functionality
+		function openLightbox(imageSrc, title, date) {
+			const lightbox = document.getElementById('lightbox');
+			const lightboxImage = document.getElementById('lightboxImage');
+			const lightboxTitle = document.getElementById('lightboxTitle');
+			const lightboxDate = document.getElementById('lightboxDate');
+			
+			lightboxImage.src = imageSrc;
+			lightboxTitle.textContent = title;
+			lightboxDate.textContent = date;
+			lightbox.classList.add('active');
+			document.body.style.overflow = 'hidden';
+		}
+		
+		function closeLightbox() {
+			const lightbox = document.getElementById('lightbox');
+			lightbox.classList.remove('active');
+			document.body.style.overflow = '';
+		}
+		
+		// Close lightbox when clicking outside the image
+		document.getElementById('lightbox').addEventListener('click', function(e) {
+			if (e.target === this || e.target.classList.contains('lightbox-content')) {
+				closeLightbox();
+			}
+		});
+		
+		// Close lightbox with Escape key
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape') {
+				closeLightbox();
+			}
 		});
 	
 	</script>

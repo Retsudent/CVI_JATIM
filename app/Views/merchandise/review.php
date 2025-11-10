@@ -81,8 +81,8 @@ textarea.form-control{min-height:120px;resize:vertical;font-family:inherit}
             </div>
             
             <div class="form-group">
-                <label>Email (opsional)</label>
-                <input type="email" name="customer_email" class="form-control" placeholder="email@example.com" />
+                <label>Email <span class="required">*</span></label>
+                <input type="email" name="customer_email" class="form-control" required placeholder="email@example.com" />
                 <div class="form-help">Email tidak akan ditampilkan publik</div>
             </div>
             
@@ -190,12 +190,12 @@ function submitReview(event) {
         if (isSuccess) {
             console.log('✅ Review berhasil dikirim!', json);
             alert('Review berhasil dikirim! Terima kasih.');
-            // Optionally reset the form
-            formEl.reset();
+            window.location.href = '/merchandise/detail/' + productId;
         } else {
             console.warn('Unexpected response or validation error', response.status, json);
-            // If server returned HTML (login page, redirect, etc.) the text will show it
-            alert('Server returned an unexpected response. Lihat console untuk detail.');
+            // Display error message from server
+            const errorMsg = json && json.error ? json.error : 'Terjadi kesalahan. Pastikan semua field wajib telah diisi dengan benar.';
+            alert(errorMsg);
         }
     })
     .catch(error => {

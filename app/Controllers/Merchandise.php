@@ -175,10 +175,16 @@ class Merchandise extends BaseController
             // Basic validation
             $rating = isset($post['rating']) ? (int)$post['rating'] : null;
             $name = isset($post['customer_name']) ? trim($post['customer_name']) : '';
+            $email = isset($post['customer_email']) ? trim($post['customer_email']) : '';
             $comment = isset($post['comment']) ? trim($post['comment']) : '';
 
-            if (!$rating || $rating < 1 || $rating > 5 || $name === '' || $comment === '') {
-                return $this->response->setStatusCode(422)->setJSON(['error' => 'Validation failed']);
+            if (!$rating || $rating < 1 || $rating > 5 || $name === '' || $email === '' || $comment === '') {
+                return $this->response->setStatusCode(422)->setJSON(['error' => 'Validation failed: Semua field wajib diisi']);
+            }
+
+            // Validate email format
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return $this->response->setStatusCode(422)->setJSON(['error' => 'Validation failed: Format email tidak valid']);
             }
 
             try {
@@ -187,7 +193,7 @@ class Merchandise extends BaseController
                 $insert = [
                     'merchandise_id' => $id,
                     'customer_name' => $name,
-                    'customer_email' => $post['customer_email'] ?? null,
+                    'customer_email' => $email,
                     'rating' => $rating,
                     'comment' => $comment,
                     'admin_response' => null,

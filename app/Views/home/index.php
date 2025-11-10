@@ -2,19 +2,19 @@
 <section class="hero-section hero-carousel-section">
            <!-- Background Image Carousel -->
            <div class="hero-carousel">
-                <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+                <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80');">
                     <div class="carousel-overlay"></div>
                 </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=1920&q=80');">
                     <div class="carousel-overlay"></div>
                 </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');">
                     <div class="carousel-overlay"></div>
                 </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1526483360412-f4dbaf036963');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1920&q=80');">
                     <div class="carousel-overlay"></div>
                 </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1529070538774-1843cb3265df');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1464822759844-d150ad2bf349?auto=format&fit=crop&w=1920&q=80');">
                     <div class="carousel-overlay"></div>
                 </div>
             </div>
@@ -164,7 +164,7 @@
                     <div class="highlights-image card-frame mx-auto">
                         <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
                         <img 
-                            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" 
+                            src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=1600&q=80" 
                             alt="Camping di alam terbuka dengan pegunungan" 
                             class="w-100 h-100 object-cover parallax-lite">
                     </div>

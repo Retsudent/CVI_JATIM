@@ -73,8 +73,8 @@ textarea.form-control{min-height:120px;resize:vertical;font-family:inherit}
             </div>
             
             <div class="form-group">
-                <label>Email (opsional)</label>
-                <input type="email" name="customer_email" class="form-control" placeholder="email@example.com" />
+                <label>Email <span class="required">*</span></label>
+                <input type="email" name="customer_email" class="form-control" required placeholder="email@example.com" />
                 <div class="form-help">Email tidak akan ditampilkan publik</div>
             </div>
             
@@ -147,6 +147,13 @@ function submitCampgroundReview(event) {
     
     // Submit via fetch
     const campgroundId = <?= json_encode($campground['id']) ?>;
+    const submitBtn = formEl.querySelector('button[type="submit"]');
+    const originalBtnHTML = submitBtn ? submitBtn.innerHTML : null;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Loading...';
+    }
+
     fetch('/campground/review/' + campgroundId, {
         method: 'POST',
         body: formData,
@@ -155,18 +162,38 @@ function submitCampgroundReview(event) {
             'Accept': 'application/json'
         }
     })
-    .then(response => {
+    .then(response => response.clone().text().then(text => ({ response, text })))
+    .then(({ response, text }) => {
         console.log('Campground response received:', response);
-        if (response.ok) {
-            alert('Review campground berhasil dikirim!');
-            window.location.href = 'http://localhost:8080/campground/detail/' + campgroundId;
+        console.log('Response status:', response.status);
+        console.log('Response body text:', text);
+
+        // Try to parse JSON if present
+        let json = null;
+        try { json = JSON.parse(text); } catch (e) { /* not JSON */ }
+
+        const isSuccess = (response.status === 201) || (json && (json.success === true || json.id));
+
+        if (isSuccess) {
+            console.log('✅ Review berhasil dikirim!', json);
+            alert('Review campground berhasil dikirim! Terima kasih.');
+            window.location.href = '/campground/detail/' + campgroundId;
         } else {
-            alert('Error: ' + response.status);
+            console.warn('Unexpected response or validation error', response.status, json);
+            // Display error message from server
+            const errorMsg = json && json.error ? json.error : 'Terjadi kesalahan. Pastikan semua field wajib telah diisi dengan benar.';
+            alert(errorMsg);
         }
     })
     .catch(error => {
         console.error('Campground error:', error);
         alert('Error submitting campground review: ' + error.message);
+    })
+    .finally(() => {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            if (originalBtnHTML !== null) submitBtn.innerHTML = originalBtnHTML;
+        }
     });
     
     return false;
